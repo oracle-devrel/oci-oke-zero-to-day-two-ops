@@ -5,7 +5,7 @@
     {
       "title": "Introduction",
       "description": "Introduction to the Workshop",
-      "filename": "../ocw23-livelabs/01-intro/intro.md"
+      "filename": "../ocw23-livelabs/00-intro/intro.md"
     },
     {
       "title": "Get Started",
@@ -13,7 +13,7 @@
       "filename": "https://oracle-livelabs.github.io/common/labs/cloud-login/cloud-login.md"
     },
     {
-      "title": "Lab 1: Prepare our tenancy",
+      "title": "Lab 1: Prepare your tenancy",
       "description": "Confirm resource availability, get to know Cloud Shell, and provision an auth token",
       "filename": "../ocw23-livelabs/01-prepare-tenancy/prepare.md"
     },
