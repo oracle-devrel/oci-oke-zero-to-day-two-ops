@@ -28,7 +28,7 @@
       "filename": "../ocw23-livelabs/03-deploy-app/app-deployment.md"
     },
     {
-      "title": "Lab4: The benefit of Virtual Nodes in OKE",
+      "title": "Lab4: Working with Virtual Nodes",
       "description" : "Deploying and managing an OKE cluster with Virtual Nodes",
       "filename":"../ocw23-livelabs/04-virtual-nodes/virtual-nodes.md"
     },
