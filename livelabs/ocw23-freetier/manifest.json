@@ -35,7 +35,7 @@
     {
       "title": "Lab5: Operational Best Practices",
       "description" : "Review some of the key capabilities, such as taints & tolerations, pod scaling, resource limits, and more",
-      "filename":"../ocw23-livelabs/04-virtual-nodes/virtual-nodes.md"
+      "filename":"../ocw23-livelabs/05-operations/operations.md"
     },
     {
       "title": "Lab6: Security and Observability of Kubernetes with OKE",
