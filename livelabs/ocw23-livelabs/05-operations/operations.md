@@ -7,15 +7,16 @@ In this lab you will explore some of the fundamental capabilities of Kubernetes 
 1. Administration tasks: 
     1. Cluster and Node Pool Upgrades
     2. Creating and scaling node pools
-    3. ...
+    3. Monitoring your cluster with OCI Logging Analytics
 2. Operational tasks:
     1. Namespaces
     2. Horizontal pod scaling
     3. Perform rolling updates
     4. Rolling back an update
-    5. Persistent storage
-    6. Working with secrets (OCI Vault and Azure Key Vault)
-    7. Utilizing image pull secrets
+    5. Node Affinity (taints and tolerations)
+    6. Persistent storage
+    7. Working with secrets (OCI Vault and Azure Key Vault)
+    8. Utilizing image pull secrets
 
 Estimated time: 40 minutes
 
