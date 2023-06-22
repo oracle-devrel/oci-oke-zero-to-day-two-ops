@@ -171,7 +171,11 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
 1. Return to your cloud shell window and enter the following command:
 
-    ```<copy>kubectl edit deployment snake-game</copy>```
+    ```
+    <copy>
+    kubectl edit deployment snake-game
+    </copy>
+    ```
 
 2. Use the arrow keys to navigate down to the **replicas:** line. It should currently be set to 1.
 
