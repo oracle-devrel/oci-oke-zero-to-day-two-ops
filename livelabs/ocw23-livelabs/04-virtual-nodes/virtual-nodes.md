@@ -151,15 +151,21 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
 1. Run the following command:
 
-    ```<copy>kubectl create -f sample-app-dep.yaml,sample-app-ingres.yaml</copy>```
+    ```
+    <copy>kubectl create -f sample-app-dep.yaml,sample-app-ingres.yaml</copy>
+    ```
 
 2. It will take about 60 seconds to instantiate the application pod. You can run the following to check status:
 
-    ```<copy>kubectl get pods -o wide</copy>```
+    ```
+    <copy>kubectl get pods -o wide</copy>
+    ```
 
 3. When the pod is in a running state, copy the following to retriev the IP address of the load balancer:
 
-    ```<copy>kubectl get ingress</copy>```
+    ```
+    <copy>kubectl get ingress</copy>
+    ```
 
     ![view ingress](images/get-ingress.png)
 
