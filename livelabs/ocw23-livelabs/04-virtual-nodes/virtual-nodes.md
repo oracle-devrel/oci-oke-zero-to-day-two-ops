@@ -10,9 +10,184 @@ Estimated time: 20 minutes
 
 In this lab you will deploy a second OKE cluster that utilizes Virtual Nodes, a feature that precludes any need to manage underlying compute infrastructure for your worker node pools. 
 
-## Task 1: 
+## Task 1: Deploy New OKE Cluster
+In this task you will deploy a new OKE cluster using Resource Manager and Terraform. All of the code is built and ready to go...you just need to click a few buttons to get it done.
 
+1. Click the following link to deploy a new OKE Cluster with Virtual Nodes.
 
+    [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-devrel/terraform-oci-arch-oke-virtual-node/archive/refs/tags/terraform-virtual-nodes-security-list-v5.zip)
+
+2. The link will open the OCI Resource Manager console (you might be prompted to log in) and pre-populate with the template info.
+
+    ![Stack Info](images/01-stack-create-info.png)
+
+3. You'll need to click the check box indicating acceptance for Oracle's T's and C's. Then click **`next`**.
+
+4. Fill in the available options when selected.
+    1. Compartment - Where you'd like the resources to be created. Use `root` if you've not created a separate compartment for this workshop.
+    2. Region - The region in which the resources will be created. This should be your home region.
+    3. You may leave the items under **OKE Inputs** all as default.
+    4. Check the box for *Ingress Controller.
+
+    ![Stack Variables](images/02-stack-create-variables.png)
+
+5. Click **`next`**
+
+6. Validate the *Stack Information*, ensure the *Run apply* checkbox is checked, and click **`create`**.
+
+7. Observe the job logs while the resources are created. You may move on to task 2 while this completes. 
+
+## Task 2: Create your manifest files
+
+1. Open Code Editor from the OCI Console.
+
+    ![Code Editor](images/code-editor.png)
+
+2. Click **File** -> **New File** from the menu.
+
+3. Name the file `sample-app-dep.yaml`
+
+4. Paste the following code block:
+
+    ```
+    <copy>
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: snake-game
+      labels:
+        app: snake-game
+    spec:
+      selector:
+        matchLabels:
+          app: snake-game
+      replicas: 1
+      template:
+        metadata:
+          labels:
+            app: snake-game
+        spec:
+          containers:
+          - name: snake
+            image: aschil/snake
+            ports:
+            - containerPort: 8080
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: snake-game-svc
+    spec:
+      selector:
+        app: snake-game
+      ports:
+        - port: 8089
+          targetPort: 8080
+      type: ClusterIP
+    </copy>
+    ```
+5. Click **File** -> **Save** to save your changes.
+
+6. Create a second file using the menu. Name it `sample-app-ingress.yaml`.
+
+7. Paste the following code block:
+
+    ```
+    <copy>
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      name: snake-game 
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+        nginx.ingress.kubernetes.io/rewrite-target: /
+    spec:
+      rules:
+      - http:
+          paths:
+            - path: /snake
+              pathType: Prefix
+              backend:
+                service:
+                  name: snake-game-svc
+                  port:
+                    number: 8089
+    </copy>
+    ```
+
+8. Save the file and minimize code editor.
+
+## Task 3: Connect to the new cluster
+
+1. Time to check back in on Resource Manager and see how the stack deployment is going. When it finishes, you can navigate to **Developer Services** -> **Kubernetes Clusters (OKE)** using the hamburger menu in the top left corner of the browser window.
+
+2. Click **`Access cluster`** and copy the command to retrieve the kubeconfig file.
+
+3. Open Cloud Shell (same menu as Code Editor).
+
+    **TIP:** You can use the view menu in the upper left corner to show Cloud Shell and Code Editor either side-by-side, stacked, or as separate tabs.
+
+4. View the kube config file created in lab 3 and locate the cluster name. Make note of this in a text file (or other secure location).
+
+    ```<copy>kubectl config --kubeconfig=config view --minify```
+
+    ![Kube Config Sample](images/kubectl-current-context.png)
+
+    **Note:** When you run the command in step 5, it will add another cluster with corresponding new context to the config file.
+
+5. Paste the command copied in step 2 and press enter.
+
+6. View the config file once more to ascertain the context name of the new cluster. Copy it to a safe location.
+
+7. Run the following command to switch context to the new cluster:
+
+    ```
+    <copy>
+    kubectl config --kubeconfig=config use-context <new cluster context name>
+    </copy>
+    ```
+
+## Task 4: Deploy the app
+
+1. Run the following command:
+
+    ```<copy>kubectl create -f sample-app-dep.yaml,sample-app-ingres.yaml</copy>```
+
+2. It will take about 60 seconds to instantiate the application pod. You can run the following to check status:
+
+    ```<copy>kubectl get pods -o wide</copy>```
+
+3. When the pod is in a running state, copy the following to retriev the IP address of the load balancer:
+
+    ```<copy>kubectl get ingress</copy>```
+
+    ![view ingress](images/get-ingress.png)
+
+4. Copy the IP address and paste in a new browser window. Append */snake* to the end.
+
+5. Set the game to difficult and see if you can achieve a higher score than anyone else.
+
+## Task 5: Scale out
+
+1. Return to your cloud shell window and enter the following command:
+
+    ```<copy>kubectl edit deployment snake-game</copy>```
+
+2. Use the arrow keys to navigate down to the **replicas:** line. It should currently be set to 1.
+
+3. Press the **`i`** key to enter insert mode and replace the 1 with a 2.
+
+4. Press **`esc`** then **`:wq`** and press enter to save changes and exit.
+
+5. Enter the following command to view the results of the change:
+
+    ```<copy>kubectl describe deployment snake-game</copy>```
+
+    ![update replicas](images/update-replicas.png)
+
+6. Observe that the deployment has been updated to 2 replicas. One may yet be unavailable as the pod is being created. You can run `kubectl get pods` to monitor the status of its creation.
+
+**Nice work!** With Virtual Nodes for OKE you can easily deploy and manage all of your container-based workloads without having to manage the underlying compute infrastructure.
 
 You may now **proceed to the next lab**.
 

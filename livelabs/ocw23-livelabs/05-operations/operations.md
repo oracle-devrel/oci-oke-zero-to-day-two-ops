@@ -7,7 +7,8 @@ In this lab you will explore some of the fundamental capabilities of Kubernetes 
 1. Administration tasks: 
     1. Cluster and Node Pool Upgrades
     2. Creating and scaling node pools
-    3. Monitoring your cluster with OCI Logging Analytics
+    3. Leveraging Preemtible worker nodes
+    4. Monitoring your cluster with OCI Logging Analytics
 2. Operational tasks:
     1. Namespaces
     2. Horizontal pod scaling
