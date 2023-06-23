@@ -23,8 +23,8 @@
       "filename": "../ocw23-livelabs/02-deploy-infra/deploy-infra.md"
     },
     {
-      "title": "Lab 3: New version release",
-      "description": "Deploy the sample application",
+      "title": "Lab 3: Deploy Apps plus Ingress Controller",
+      "description": "Deploy the sample applications and the NGINX ingress controller",
       "filename": "../ocw23-livelabs/03-deploy-app/deploy-app.md"
     },
     {
@@ -33,9 +33,9 @@
       "filename":"../ocw23-livelabs/04-virtual-nodes/virtual-nodes.md"
     },
     {
-      "title": "Lab5: Operational Best Practices",
+      "title": "Lab5: Operational Best Practices - Overview",
       "description" : "Review some of the key capabilities, such as taints & tolerations, pod scaling, resource limits, and more",
-      "filename":"../ocw23-livelabs/05-operations/operations.md"
+      "filename":"../ocw23-livelabs/05-operations/operations-overview.md"
     },
     {
       "title": "Lab6: Security and Observability of Kubernetes with OKE",

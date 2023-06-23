@@ -127,23 +127,35 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
     **TIP:** You can use the view menu in the upper left corner to show Cloud Shell and Code Editor either side-by-side, stacked, or as separate tabs.
 
-4. View the kube config file created in lab 3 and locate the cluster name. Make note of this in a text file (or other secure location).
+4. View the kube config file created in lab 3 and locate the context name.
 
-    ```<copy>kubectl config --kubeconfig=config view --minify```
+    ```
+    <copy>kubectl config view-contexts
+    ```
 
     ![Kube Config Sample](images/kubectl-current-context.png)
 
     **Note:** When you run the command in step 5, it will add another cluster with corresponding new context to the config file.
 
-5. Paste the command copied in step 2 and press enter.
+5. You may choose to either record the context of your first cluster in a text file, or change the context name to something that is easier to distinguish.
 
-6. View the config file once more to ascertain the context name of the new cluster. Copy it to a safe location.
+    ```
+    <copy>
+    kubectl config rename-context <old name> <new name>
+    </copy>
+    ```
+
+    ![change context name](images/rename-context.png)
+
+6. Now, paste the command copied in step 2 and press enter.
+
+7. The new cluster is added to your config file. At this point, you may also choose to rename the context for the new cluster. First, `view-contexts` to get the name, then `rename-context` to update it.
 
 7. Run the following command to switch context to the new cluster:
 
     ```
     <copy>
-    kubectl config --kubeconfig=config use-context <new cluster context name>
+    kubectl config use-context <new cluster context name>
     </copy>
     ```
 
@@ -191,7 +203,9 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
 5. Enter the following command to view the results of the change:
 
-    ```<copy>kubectl describe deployment snake-game</copy>```
+    ```
+    <copy>kubectl describe deployment snake-game</copy>
+    ```
 
     ![update replicas](images/update-replicas.png)
 

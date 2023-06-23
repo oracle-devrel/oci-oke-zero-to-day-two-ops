@@ -5,10 +5,11 @@
 In this lab you will explore some of the fundamental capabilities of Kubernetes and how to execute those common tasks within OKE. This includes:
 
 1. Administration tasks: 
-    1. Cluster and Node Pool Upgrades
-    2. Creating and scaling node pools
-    3. Leveraging Preemtible worker nodes
-    4. Monitoring your cluster with OCI Logging Analytics
+    1. Using the Kubernetes Dashboard
+    2. Cluster and Node Pool Upgrades
+    3. Creating and scaling node pools
+    4. Leveraging Preemtible worker nodes
+    5. Monitoring your cluster with OCI Logging Analytics
 2. Operational tasks:
     1. Namespaces
     2. Horizontal pod scaling
@@ -19,17 +20,31 @@ In this lab you will explore some of the fundamental capabilities of Kubernetes 
     7. Working with secrets (OCI Vault and Azure Key Vault)
     8. Utilizing image pull secrets
 
-Estimated time: 40 minutes
+Estimated time: 45 minutes
 
 ### Objectives
 
 In this lab you will familiarize yourself with a variety of administration and operations activities commonly used with OKE. You may notice many of these are standard, Kubernetes functionality, there are a number of OKE-specific capabilities that make managing your Kubernetes environment a little bit easier.
 
-## Task 1: Upgrade your OKE Cluster
+## Task 1: Deploy the Kubernetes Dashboard
 
-Instructions here
+The Kubernetes dashboard is a managed add-on and can be deployed when the cluster is first created. For the sake of this workshop, we chose to walk through the process of enabling this add-on later.
 
-## Task 2: Create a new node pool, scale out
+1. Open the OCI console and navigate to **Developer Services** -> **Kubernetes Clusters (OKE)**. 
+
+2. Locate and click the cluster you created in Lab 2.
+
+3. Under **Resources** on the left-hand side of the screen, click *Add-ons*.
+
+4. Click **`Manage Add-ons`** and then click the *Kubernetes dashboard* add-on. In the dialog that appears, click the checkbox to enable it. Then **`Save changes`**.
+
+    ![enable dashboard](images/enable-k8s-dashboard.png)
+
+5. 
+
+
+## Task 2: Setting up Auto scaling
+
 
 Instructions here
 
