@@ -38,6 +38,11 @@
       "filename":"../ocw23-livelabs/05-operations/operations-overview.md"
     },
     {
+      "title": "Lab5a: Ops - Horizontal Scaling",
+      "description" : "Setting up and enacting horizontal pod auto scaling",
+      "filename":"../ocw23-livelabs/05-operations/operations-hpa.md"
+    },
+    {
       "title": "Lab6: Security and Observability of Kubernetes with OKE",
       "description" : "Leveraging built-in and 3rd party tools to monitor resources and enforce security best practices",
       "filename":"../ocw23-livelabs/06-security-observability/security-observability.md"
