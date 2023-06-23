@@ -38,7 +38,7 @@
       "filename":"../ocw23-livelabs/05-operations/operations-overview.md"
     },
     {
-      "title": "Lab5a: Ops - Horizontal Scaling",
+      "title": "Lab5a: Ops - Horizontal Pod Auto Scaling",
       "description" : "Setting up and enacting horizontal pod auto scaling",
       "filename":"../ocw23-livelabs/05-operations/operations-hpa.md"
     },
