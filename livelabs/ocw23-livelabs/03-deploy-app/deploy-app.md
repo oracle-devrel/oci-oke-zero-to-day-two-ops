@@ -80,19 +80,182 @@ The `ingress-nginx` controller is built and mainained as part of the Kubernetes 
 
 ## Task 3: Deploy another app and configure ingress
 
-    1. Create manifest files
-    2. Deploy
-    3. Test
+The first deployment was just a basic example that allowed us to quickly spin up an app and see what it looks like to connect to our cluster over the internet. For the rest of the workshop we'll use something a bit more complex.
 
-## Task 4: 
+[MuShop](https://oracle-quickstart.github.io/oci-cloudnative/cloud/) is a microservices demo application **purpose-built** to showcase interoperable `Cloud Native` services on `Oracle Cloud Infrastructure`, and to demonstrate a number of clout native methodologies. While the complete deployment leverages a wide variety of services, we'll be deploying a simple version of the application to maintain focus on OKE.
+
+![MuShop Architecture](images/mushop_diagram.png)
+
+1. From Cloud Shell, clone the Github repo.
+
+    ```
+    <copy>
+    git clone https://github.com/oracle-quickstart/oci-cloudnative.git mushop
+    </copy>
+    ```
+
+    Sample response:
+
+    ```
+    Cloning into 'mushop'...
+    remote: Enumerating objects: 23629, done.
+    remote: Counting objects: 100% (429/429), done.
+    remote: Compressing objects: 100% (230/230), done.
+    remote: Total 23629 (delta 265), reused 343 (delta 198), pack-reused 23200
+    Receiving objects: 100% (23629/23629), 28.26 MiB | 31.69 MiB/s, done.
+    Resolving deltas: 100% (14463/14463), done.
+    ```
+
+2. Change to the Mushop directory
+
+    ```
+    <copy>cd mushop</copy>
+    ```
+
+    ![Mushop directory structure](images/mushop_code.png)
+
+3. Remembering that helm provides a way of packaging and deploying configurable charts, next we will deploy the application in "mock mode" where cloud services are mocked, yet the application is fully functional.
+
+    ```
+    <copy>
+    helm upgrade --install mushop ./deploy/complete/helm-chart/mushop -f ./deploy/complete/helm-chart/mushop/values-mock.yaml
+    </copy>
+    ```
+
+4. It may take a few moments to download and run all the application images. You can run the following to observe:
+
+    ```
+    <copy>kubectl get pods --watch</copy>
+    ```
+
+    >Note: To leave the _watch_ press `CTRL-C` anytime. If do not want to keep watching and just see the current list of PODS, just use `kubectl get pods`
+
+5. Make sure all the pods are in the `Running` state.
+
+    ```
+    <copy>kubectl get pods</copy>
+    ```
+
+    Sample response:
+
+    ```
+    NAME                                  READY   STATUS      RESTARTS   AGE
+    mushop-api-6cbb9957fc-smmqf           1/1     Running     0          3m3s
+    mushop-assets-687c574c68-r2wf6        1/1     Running     0          3m3s
+    mushop-assets-deploy-1-kbnj5          0/1     Completed   0          3m3s
+    mushop-edge-645bc886c7-8m52n          1/1     Running     0          3m3s
+    mushop-fulfillment-76f98cddbb-vnp6h   1/1     Running     0          3m2s
+    mushop-session-67bc86d446-jnq8w       1/1     Running     0          3m3s
+    mushop-storefront-5747bd4644-tdn4v    1/1     Running     0          3m3s
+    ```
+6. Find the EXTERNAL-IP assigned to the edge microservice. Open the IP address in your browser.
+
+    ```
+    <copy>kubectl get svc edge</copy>
+    ```
+
+    Sample response:
+
+    ```
+    NAME   TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AGE
+    edge   LoadBalancer   10.96.74.116   143.47.123.86   80:32756/TCP   3m31s
+    ```
+
+7. Open the MuShop storefront with your browser by connecting to http://< EXTERNAL-IP >
+
+    ![MuShop Storefront](images/mushop_storefront.png)
 
 
-This part is pretty straightforward.
-You may now **proceed to the next lab**.
+
+## Task 4: Explore the deployed app
+
+When you create a Deployment, you'll need to specify the container image for your application and the number of replicas that you want to run.
+
+Kubernetes created a Pod to host your application instance. A Pod is a Kubernetes abstraction that represents a group of one or more application containers (such as Docker), and some shared resources for those containers. Those resources include:
+
+* Shared storage, as Volumes
+* Networking, as a unique cluster IP address
+* Information about how to run each container, such as the container image version or specific ports to use
+
+The most common operations can be done with the following kubectl commands:
+
+* **kubectl get** - list resources
+* **kubectl describe** - show detailed information about a resource
+* **kubectl logs** - print the logs from a container in a pod
+* **kubectl exec** - execute a command on a container in a pod
+
+You can use these commands to see when applications were deployed, what their current statuses are, where they are running and what their configurations are.
+
+1. Check the microservices deployments for MuShop
+
+    ````shell
+    <copy>
+    kubectl get deployments
+    </copy>
+    ````
+
+1. Check the pods deployed
+
+    ````shell
+    <copy>
+    kubectl get pods
+    </copy>
+    ````
+
+1. Get the last created pod to inspect
+
+    ````shell
+    <copy>
+    export POD_NAME=$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}'|awk '{print $1}'|tail -n 1) && \
+    echo Using Pod: $POD_NAME
+    </copy>
+    ````
+
+1. View what containers are inside that Pod and what images are used to build those containers
+
+    ````shell
+    <copy>
+    kubectl describe pod $POD_NAME
+    </copy>
+    ````
+
+1. Anything that the application would normally send to `STDOUT` becomes logs for the container within the Pod. We can retrieve these logs using the `kubectl logs` command:
+
+    ````shell
+    <copy>
+    kubectl logs $POD_NAME
+    </copy>
+    ````
+
+1. Execute commands directly on the container once the Pod is up and running.
+
+    ````shell
+    <copy>
+    kubectl exec $POD_NAME env
+    </copy>
+    ````
+
+1. List the content of the Pod’s container work folder:
+
+    ````shell
+    <copy>
+    kubectl exec -ti $POD_NAME -- ls
+    </copy>
+    ````
+
+    *Note:* You can also start a `bash` session on the Pod's container, just change the `ls` to `bash`. Remember that you need to type `exit` to exit the bash session.
+
+
+You may now **proceed to the next lab**.\
+
+## Learn More
+
+* [MuShop Github Repo](https://github.com/oracle-quickstart/oci-cloudnative)
+* [MuShop Deployment documentation](https://oracle-quickstart.github.io/oci-cloudnative/cloud/)
 
 
 ## Acknowledgements
 
-* **Author** - 
-* **Contributors** -
-* **Last Updated By/Date** -
+* **Author** - Eli Schilling (Developer Advocate)
+* **Contributors** - Adao Oliveira Junior (Solutions Architect)
+* **Last Updated By/Date** - Eli Schilling, July 2023
