@@ -165,8 +165,6 @@ The first deployment was just a basic example that allowed us to quickly spin up
 
     ![MuShop Storefront](images/mushop_storefront.png)
 
-
-
 ## Task 4: Explore the deployed app
 
 When you create a Deployment, you'll need to specify the container image for your application and the number of replicas that you want to run.
@@ -194,7 +192,7 @@ You can use these commands to see when applications were deployed, what their cu
     </copy>
     ````
 
-1. Check the pods deployed
+2. Check the pods deployed
 
     ````shell
     <copy>
@@ -202,7 +200,7 @@ You can use these commands to see when applications were deployed, what their cu
     </copy>
     ````
 
-1. Get the last created pod to inspect
+3. Get the last created pod to inspect
 
     ````shell
     <copy>
@@ -211,7 +209,7 @@ You can use these commands to see when applications were deployed, what their cu
     </copy>
     ````
 
-1. View what containers are inside that Pod and what images are used to build those containers
+4. View what containers are inside that Pod and what images are used to build those containers
 
     ````shell
     <copy>
@@ -219,7 +217,7 @@ You can use these commands to see when applications were deployed, what their cu
     </copy>
     ````
 
-1. Anything that the application would normally send to `STDOUT` becomes logs for the container within the Pod. We can retrieve these logs using the `kubectl logs` command:
+5. Anything that the application would normally send to `STDOUT` becomes logs for the container within the Pod. We can retrieve these logs using the `kubectl logs` command:
 
     ````shell
     <copy>
@@ -227,7 +225,7 @@ You can use these commands to see when applications were deployed, what their cu
     </copy>
     ````
 
-1. Execute commands directly on the container once the Pod is up and running.
+6. Execute commands directly on the container once the Pod is up and running.
 
     ````shell
     <copy>
@@ -235,7 +233,7 @@ You can use these commands to see when applications were deployed, what their cu
     </copy>
     ````
 
-1. List the content of the Pod’s container work folder:
+7. List the content of the Pod’s container work folder:
 
     ````shell
     <copy>
@@ -246,7 +244,7 @@ You can use these commands to see when applications were deployed, what their cu
     *Note:* You can also start a `bash` session on the Pod's container, just change the `ls` to `bash`. Remember that you need to type `exit` to exit the bash session.
 
 
-You may now **proceed to the next lab**.\
+You may now **proceed to the next lab**.
 
 ## Learn More
 
