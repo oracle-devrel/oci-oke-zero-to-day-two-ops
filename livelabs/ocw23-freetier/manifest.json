@@ -28,37 +28,42 @@
       "filename": "../ocw23-livelabs/03-deploy-app/deploy-app.md"
     },
     {
-      "title": "Lab4: Working with Virtual Nodes",
+      "title": "Lab 4: Working with Virtual Nodes",
       "description" : "Deploying and managing an OKE cluster with Virtual Nodes",
       "filename":"../ocw23-livelabs/04-virtual-nodes/virtual-nodes.md"
     },
     {
-      "title": "Lab5: Operational Best Practices - Overview",
+      "title": "Lab 5: Operational Best Practices - Overview",
       "description" : "Review some of the key capabilities, such as taints & tolerations, pod scaling, resource limits, and more",
       "filename":"../ocw23-livelabs/05-operations/operations-overview.md"
     },
     {
-      "title": "Lab5a: Ops - Horizontal Pod Auto Scaling",
+      "title": "Lab 5a: Ops - Horizontal Pod Auto Scaling",
       "description" : "Setting up and enacting horizontal pod auto scaling",
       "filename":"../ocw23-livelabs/05-operations/operations-hpa.md"
     },
     {
-      "title": "Lab6: Security and Observability of Kubernetes with OKE",
+      "title": "Lab 6: Security and Observability of Kubernetes with OKE",
       "description" : "Leveraging built-in and 3rd party tools to monitor resources and enforce security best practices",
       "filename":"../ocw23-livelabs/06-security-observability/security-observability.md"
     },
     {
-      "title": "Lab7: Automating OKE App Deployment with OCI DevOps",
+      "title": "Lab 6a: Encrypting Volumes with Customer Managed Keys",
+      "description" : "Utilize cutsomer-managed keys and OCI vault for data encryption of dynamically provisioned volumes.",
+      "filename":"../ocw23-livelabs/06-security-observability/sec-data_encryption.md"
+    },
+    {
+      "title": "Lab 7: Automating OKE App Deployment with OCI DevOps",
       "description" : "Streamlining app build and delivery with OCI DevOps service",
       "filename":"../ocw23-livelabs/07-devops/devops.md"
     },
     {
-      "title": "Lab8: Cleaning up your tenancy",
+      "title": "Lab 8: Cleaning up your tenancy",
       "description" : "Clean-up and remove all deployed resources",
       "filename":"../ocw23-livelabs/08-cleanup/cleanup.md"
     },
     {
-      "title": "Oracle CloudWorld 2022 - Get Help",
+      "title": "Oracle CloudWorld 2023 - Get Help",
       "filename": "https://oracle-livelabs.github.io/common/support/ocwsupportlab/ocwsupportlab.md"
     }
   ]
