@@ -119,7 +119,7 @@ OKE by default create two Storage Classes for dynamic volume provisioning. Howev
     reclaimPolicy: Delete
     allowVolumeExpansion: true
     volumeBindingMode: WaitForFirstConsumer
-    <copy>
+    </copy>
     ```
 
 4. Validate the file in Cloud Shell.
@@ -128,11 +128,7 @@ OKE by default create two Storage Classes for dynamic volume provisioning. Howev
 
 5. Apply the configuration to your OKE cluster.
 
-    ```
-    <copy>
-    kubectl apply -f storage-class.yaml
-    </copy>
-    ```
+    ```<copy>kubectl apply -f storage-class.yaml</copy>```
 
     ![Apply storage class](images/apply-storageclass.png)
 
