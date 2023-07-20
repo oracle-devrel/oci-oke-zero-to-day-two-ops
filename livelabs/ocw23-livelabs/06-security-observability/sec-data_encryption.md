@@ -188,10 +188,10 @@ OKE by default create two Storage Classes for dynamic volume provisioning. Howev
     apiVersion: v1
     kind: Pod
     metadata:
-    name: nginx
+    name: nginx-with-storage
     spec:
     containers:
-        - name: nginx
+        - name: nginx-with-storage
         image: nginx:latest
         ports:
             - name: http
@@ -236,6 +236,24 @@ OKE by default create two Storage Classes for dynamic volume provisioning. Howev
     ![Assign master key](images/assign-master-key.png)
 
     >Note: It will take a couple of seconds to update the volume, at which time it will use your customer-managed key for encryption.
+
+## Task 4: Clean Up
+
+With a few quick commands you'll delete the pod and PVC to remove the resources that were deployed during this activity.
+
+1. In Cloud Shell, run the following to delete the pod.
+
+    ```<copy>kubectl delete pod nginx-with-storage</copy>```
+
+2. Then run the following to delete the PVC (which will also remove the Block Volume resource)
+
+    ```<copy>kubectl delete pvc nginx-pvc</copy>```
+
+3. In the OCI Console, navigate to **Identity & Security** -> **Vault** and delete the Vault you created earlier.  
+
+    >Note: It will prompt for a deletion date with a default of 1 month in the futre. You may change the date to be as early as 1 week in the futre.
+
+4. That's it...you're all set to move forward.
 
 ## Conclusion
 
