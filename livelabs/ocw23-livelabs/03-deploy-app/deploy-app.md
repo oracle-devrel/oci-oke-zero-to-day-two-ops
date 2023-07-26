@@ -123,28 +123,40 @@ The first deployment was just a basic example that allowed us to quickly spin up
 
     ![Mushop directory structure](images/mushop_code.png)
 
-3. You will need to make one quick configuration change - add a parameter to the `values-mock.yaml` file to enable Ingress.
+3. You will need to make two quick configuration changes:
 
-    ```
-    <copy>
-    vi deploy/complete/helm-chart/mushop/values-mock.yaml
-    </copy>
-    ```
-
-    * type `i` to enter *insert* mode
-    * arrow down to the end of the file (may require a carriage return or two at the end)
-    * add the following:
+    1. add a parameter to the `values-mock.yaml` file to enable Ingress.
 
         ```
         <copy>
-        ingress:
-          enabled: true
+        vi deploy/complete/helm-chart/mushop/values-mock.yaml
         </copy>
         ```
 
-    * press `[esc]`, then type `:wq` and press enter to save.
+        * type `i` to enter *insert* mode
+        * arrow down to the end of the file (may require a carriage return or two at the end)
+        * add the following:
 
+            ```
+            <copy>
+            ingress:
+            enabled: true
+            </copy>
+            ```
 
+        * press `[esc]`, then type `:wq` and press enter to save.
+
+    2. Remove horizontal pod autoscaling (HPA) from the **storefront** helm chart. You will configure HPA in a later lab.
+
+        ```
+        <copy>
+        vi deploy/complete/helm-chart/mushop/charts/storefront/values.yaml
+        </copy>
+        ```
+
+        * arrow down to the `hpa:` section
+        * edit the `enabled:` value to **false**
+        * exit and save
 
 4. Remembering that helm provides a way of packaging and deploying configurable charts, next we will deploy the application in "mock mode" where cloud services are mocked, yet the application is fully functional.
 

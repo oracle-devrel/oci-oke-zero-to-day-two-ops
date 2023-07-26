@@ -92,7 +92,7 @@ It will take a short time for the metrics server to start up, but you can check 
     metrics-server         1/1     1            1           39s
     ```
 
-### Task 2: Using the captured metrics
+### Task 1b: Using the captured metrics
 
 Once the metrics server is running (it will have an AVAILABLE count of 1) you can get information on the state of the system
 
@@ -204,55 +204,31 @@ If you want to check if the variable is still set type `echo $EXTERNAL_IP` if it
 
 </details>
 
-  4. In Cloud Shell, create a new shell script called `loadgen.sh` and add the following code:
+  4. To generate load, you'll use a container with the BusyBox image.
 
     ```
-    #!/bin/bash -f
-    SCRIPT_NAME=`basename $0`
-    if [ $# -eq 0 ]
-      then
-        echo "Missing arguments supplied to $SCRIPT_NAME, you must provide :"
-        echo " 1st arg External IP address of the ingress controller service load balancer"
-        exit -1 
-    fi
-    EXTERNAL_IP=$1
-    i=0
-    while true;do
-    i=$[$i+1]
-    echo "Iteration $i"
-    curl --silent -o /dev/null http://$EXTERNAL_IP
-    # Do a little sleep so we don't totally overload the server
-    sleep $2
-    done
+    <copy>
+    kubectl run -it --rm load-generator --image=busybox /bin/sh
+    </copy>
     ```
 
-    To exit and save: *esc* + `:wq` + [Enter]
+  5. This is going to run the container with interactive prompt allowing you to execute local commands.  Generate load with the following command:
+
+    ```
+    <copy>
+    while true; do wget -q -o /dev/null http://{your external ip}; done
+    </copy>
+    ```
+
+    >Note: You cannot leverage the *$EXTERNAL_IP* variable here because the command executes in the BusyBox container, not you Cloud Shell environment.
+
+    ![Load Gen Command Prompt](images/load-gen-busybox.png)
+
+  6. Open up a new window on the OCI console (duplicate the existing browser tab)
   
-  5. Start a load generator. In the OCI Cloud Shell.
+  7. Open up the OCI Cloud shell in the new window.
   
-    ```bash
-    <copy>bash loadgen.sh $EXTERNAL_IP 0.1</copy>
-    ```
-
-    Note that the 0.1 controls how long the script waits, depending on how fast things respond below you may need to adjust the rate up (fewer requests) or down (more requests) If you chose an especially powerful processor you may need to open another cloud window in your browser and run a second load in that as well, or adjust the CPU available to the pod.
-
-    ```
-    Iteration 1
-    Iteration 2
-    Iteration 3
-    Iteration 4
-    .
-    .
-    .
-    ```
-
-  6. Open up a new window on the OCI console
-  
-  7. Open up the OCI Cloud shell in the new window
-  
-    Let the script run for about 75 seconds (the iteration counter reaches over 750) This will let the load statistics level out.
-
-    This will have increased the load, to see the increased load
+    Let the BusyBox command run for about 75 seconds to allow time for the load to increase.
 
   8. In the **new** OCI Cloud Shell type
   
@@ -281,35 +257,31 @@ If you want to check if the variable is still set type `echo $EXTERNAL_IP` if it
     NAME                           CPU(cores)   MEMORY(bytes)   
     mushop-api-88bd7c499-qcwcp           1m           12Mi            
     mushop-assets-7f97df7bbd-zsmgc       1m           7Mi             
-    mushop-edge-5d6f7ccf67-xdvr2         1m           25Mi            
+    mushop-edge-5d6f7ccf67-xdvr2         19m          25Mi   
+    mushop-edge-5d6f7ccf67-dxmn9         17m          13Mi         
     mushop-session-864cb5b4db-vqpxr      1m           7Mi             
-    mushop-storefront-7b685595df-sczzf   1m           1Mi           
+    mushop-storefront-7b685595df-sczzf   230m         1Mi           
     ```
 
-    Notice that in this particular example the CPU here for the *nginx* is at 251m (your number may be different). This is actually the limit allowed in the storefront deployment.yaml file, which has a resource restriction of 250 milli CPU specified. 
+    Notice that in this particular example the CPU here for the *mushop-storefront* is at 230m (your number may be different). This is very close the limit allowed in the storefront deployment.yaml file, which has a resource restriction of 300 milli CPU specified. 
 
-    If the load does not reach 250 then you may need to adjust the request rate, or open another cloud shell in a new browser tab / window and run another load generator to ensure you can hit the limit (and auto scaling will kick in once we've configured it)
+    Don't worry if the load doesn't reach the specified limit. The best practice is to initiate a scaling action while you still have a little bit of capacity left.
 
-    ```yaml
-            resources:
-              limits:
-                # Set this to be quarter of a CPU for now
-                cpu: "250m"
-    ```
+    >Note: You may see the **mushop-edge** pod scaling out. That was configured as part of the Helm chart deployment. You may recall you disabled the HPA for storefront before deploying the app.
 
-We can also get the current resource level for the container using kubectl and the jsonpath capability
-
-  10. In the OCI Cloud Shell (substitute your storefront pod name) type 
+  10. You can get the current resource level for the container using kubectl and the jsonpath capability. In the OCI Cloud Shell (substitute your storefront pod name) type 
   
-  ```bash
-  kubectl get pod storefront-79c465dc6b-x8fbl -o=jsonpath='{.spec.containers[0].resources.limits.cpu}'
-  ```
- 
-    ```
-    250m
+    ```bash
+    <copy>
+    kubectl get pod storefront-79c465dc6b-x8fbl -o=jsonpath='{.spec.containers[0].resources.limits.cpu}'
+    </copy>
     ```
  
-  11. In the OCI Cloud shell window running the load generator stop it using Control-C
+    ```
+    300m
+    ```
+ 
+  11. In the OCI Cloud shell window running the load generator, stop it using Control-C. The BusyBox container will continue running, awaiting additional commands.
 
 <details><summary><b>Namespace level resource restrictions and implications</b></summary>
 
@@ -336,11 +308,11 @@ Setup autoscale (normally of course this would be handled using modifications to
   1. In the OCI Cloud Shell create an auto scaller
   
     ```bash
-    <copy>kubectl autoscale deployment <tbd> --min=2 --max=5 --cpu-percent=25</copy>
+    <copy>kubectl autoscale deployment mushop-storefront --min=1 --max=3 --cpu-percent=25</copy>
     ```
   
     ```
-    horizontalpodautoscaler.autoscaling/tbd autoscaled
+    horizontalpodautoscaler.autoscaling/mushop-storefront autoscaled
     
     ```
     The autoscaler will attempt to achieve a target CPU load of 25%, (or whatevery you used) adding or removing pods to the deployment as needed to meet that goal, but never going below two pods or above 5
@@ -351,12 +323,12 @@ Setup autoscale (normally of course this would be handled using modifications to
   2. In the OCI Cloud Shell type 
   
     ```bash
-    <copy>kubectl get horizontalpodautoscaler tbd</copy>
+    <copy>kubectl get horizontalpodautoscaler mushop-storefront</copy>
     ```
 
     ```
-    NAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
-    <tbd>        Deployment/tbd           25%/25%   2         5         2          44s
+    NAME         REFERENCE                          TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+    <tbd>        Deployment/mushop-storefront       1%/25%     1         3         1          44s
     ```
 
     Note that because we told the auto scaler that we wanted a minimum of 2 pods the REPLICAS has already increased to 2. Because this deployment is "behind" the tbe service the service will automatically arrange for the load to be balanced across both pods for us.
@@ -364,9 +336,9 @@ Setup autoscale (normally of course this would be handled using modifications to
     Of course typing `horizontalpodautoscaler` takes some time, so kubectl has an alias setup for us, we can just type `hpa` instead, for example
 
     ```
-    kubectl get hpa tbd
+    kubectl get hpa mushop-storefront
     NAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
-    tbd           Deployment/tbd          25%/25%   2         5         2          56s
+    tbd           Deployment/tbd         1%/25%     1         3         1          56s
     ```
 
     A few points on the output The TARGET column tells us what the **current** load is first, this is the average across **all** the pods in the deployment, Then the target load the autoscaler will aim to achieve by adding or removing pods.
@@ -376,109 +348,100 @@ Setup autoscale (normally of course this would be handled using modifications to
   3. Getting the autoscaler details. In the OCI Cloud Shell type
   
     ```bash
-    <copy>kubectl describe hpa tbd</copy>
+    <copy>kubectl describe hpa mushop-storefront</copy>
     ```
 
     ```
-    Name:                                                  tbd
-    Namespace:                                             default
-    Labels:                                                <none>
-    Annotations:                                           <none>
-    CreationTimestamp:                                     Fri, 23 Jun 2023 19:07:36 +0000
-    Reference:                                             Deployment/tbd
-    Metrics:                                               ( current / target )
-      resource cpu on pods  (as a percentage of request):  25% (63m) / 25%
-    Min replicas:                                          2
-    Max replicas:                                          5
-    Deployment pods:                                       2 current / 2 desired
-    Conditions:
-      Type            Status  Reason              Message
-      ----            ------  ------              -------
-      AbleToScale     True    ReadyForNewScale    recommended size matches current size
-      ScalingActive   True    ValidMetricFound    the HPA was able to successfully calculate a replica count from cpu resource utilization (percentage of request)
-      ScalingLimited  False   DesiredWithinRange  the desired count is within the acceptable range
-    Events:           <none>
+    Name:                     mushop-storefront
+    Namespace:                default
+    Labels:                   <none>
+    Annotations:              autoscaling.alpha.kubernetes.io/conditions:
+                                [{"type":"AbleToScale","status":"True","lastTransitionTime":"2023-07-26T18:42:43Z","reason":"ReadyForNewScale","message":"recommended size...}]
+                              autoscaling.alpha.kubernetes.io/current-metrics:
+                                [{"type":"Resource","resource":{"name":"cpu","currentAverageUtilization":1,"currentAverageValue":"1m"}}]
+    CreationTimestamp:        Wed, 26 Jul 2023 18:42:28 +0000
+    Reference:                Deployment/mushop-storefront
+    Target CPU utilization:   25%
+    Current CPU utilization:  1%
+    Min replicas:             1
+    Max replicas:             3
+    Deployment pods:          1 current / 1 desired
+    Events:                   <none>
     ```
 
-    Now restart the load generator program. Note that you may need to change the sleep time from 0.1 to a different value if the load generated is not high enough to trigger an autoscale operation, but don't set it to low!
+    Now run the load generator command again.
 
-  4. In the OCI Cloud Shell where you were running the load balancer previously (substitute the IP address for the ingress for your cluster) If needed run multiple in different cloud shells.
+  4. In the OCI Cloud Shell where you were running the load generator previously (you can use the up arrow to recall the last command):
   
     ```bash
-    <copy>bash loadgen.sh $EXTERNAL_IP 0.1</copy>
-    ```
-
-
-    ```
-    Itertation 1
-    Itertation 2
-    ...
+    <copy>while true; do wget -q -o /dev/null http://{your public IP}; done</copy>
     ```
 
   5. Switch to the second cloud shell window in your browser.
 
-    Allow a short time for the load to be recorded, then look at the load on the pods (you may have to adjust the request frequency in the script if the load does not increase enough to trigger autoscaling
+    Allow a short time for the load to be recorded, then look at the load on the pods.
 
-  6. Let's check there is a load. In the OCI Cloud Shell type
+  6. Go ahead and check to see if there is load. In the OCI Cloud Shell type
   
     ```bash
     <copy>kubectl top pods</copy>
     ```
 
-    ```
-    NAME                           CPU(cores)   MEMORY(bytes)   
-    nginx2                         45m          421Mi           
-    nginx-2340cds0                 117m         288Mi           
-    nginx-79c465dc6b-x8fbl         251m         1931Mi          
+    ``` 
+    NAME                                 CPU(cores)   MEMORY(bytes)   
+    load-generator                       127m         0Mi             
+    mushop-api-88bd7c499-tdv9j           1m           14Mi            
+    mushop-assets-7f97df7bbd-6t765       1m           7Mi             
+    mushop-edge-5d6f7ccf67-966wz         99m          26Mi            
+    mushop-session-864cb5b4db-czvbx      1m           7Mi             
+    mushop-storefront-7b685595df-26rxr   3m           1Mi             
+    mushop-storefront-7b685595df-49v55   63m          1Mi             
+    mushop-storefront-7b685595df-ftkjj   1m           1Mi           
     ```
 
-    Notice that the load on the pods has increased
+    Notice that the load on the pods has increased and additional mushop-storefront pods have been scheduled.
 
   7. Let's look at the autoscaler. In the OCI Cloud Shell type
   
     ```bash
-    <copy>kubectl get horizontalpodautoscaler tbd</copy>
+    <copy>kubectl get hpa mushop-storefront</copy>
     ```
 
     ```
-    NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-    tbd   Deployment/tbd   43%/25%   2         5         3          16m
+    NAME                REFERENCE                       TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+    mushop-storefront   Deployment/mushop-storefront    75%/25%   1         3         3          16m
     ```
 
-    The current load (in this case 73%) is above the 50% target. The autoscaler will have kicked in and be starting to do it's thing. 
+    The current load (in this case 75%) is above the 25% target. The autoscaler kicked in quickly and proivioned additional pods.
 
   8. Let's look at the autoscaler details. In the OCI Cloud Shell type
   
     ```bash
-    <copy>kubectl describe hpa storefront</copy>
+    <copy>kubectl describe hpa mushop-storefront</copy>
     ```
   
     ```
-    Name:                                                  tbd
-    Namespace:                                             default
-    Labels:                                                <none>
-    Annotations:                                           <none>
-    CreationTimestamp:                                     Fri, 23 Jun 2023 19:07:36 +0000
-    Reference:                                             Deployment/storefront
-    Metrics:                                               ( current / target )
-      resource cpu on pods  (as a percentage of request):  43% (87m) / 25%
-    Min replicas:                                          2
-    Max replicas:                                          5
-    Deployment pods:                                       3 current / 5 desired
-    Conditions:
-      Type            Status  Reason              Message
-      ----            ------  ------              -------
-      AbleToScale     True    SucceededRescale    the HPA controller was able to update the target scale to 5
-    ScalingActive   True    ValidMetricFound    the HPA was able to successfully calculate a replica count from cpu resource utilization (percentage of request)
-    ScalingLimited  False   DesiredWithinRange  the desired count is within the acceptable range
+    Name:                     mushop-storefront
+    Namespace:                default
+    Labels:                   <none>
+    Annotations:              autoscaling.alpha.kubernetes.io/conditions:
+                                [{"type":"AbleToScale","status":"True","lastTransitionTime":"2023-07-26T18:42:43Z","reason":"ScaleDownStabilized","message":"recent recomm...}]
+                              autoscaling.alpha.kubernetes.io/current-metrics:
+                                [{"type":"Resource","resource":{"name":"cpu","currentAverageUtilization":72,"currentAverageValue":"72m"}}]
+    CreationTimestamp:        Wed, 26 Jul 2023 18:42:28 +0000
+    Reference:                Deployment/mushop-storefront
+    Target CPU utilization:   25%
+    Current CPU utilization:  72%
+    Min replicas:             1
+    Max replicas:             3
+    Deployment pods:          3 current / 3 desired
     Events:
       Type    Reason             Age   From                       Message
       ----    ------             ----  ----                       -------
-      Normal  SuccessfulRescale  57s   horizontal-pod-autoscaler  New size: 3; reason: cpu resource utilization (percentage of request) above target
-      Normal  SuccessfulRescale  11s   horizontal-pod-autoscaler  New size: 5; reason: cpu resource utilization (percentage of request) above target
+      Normal  SuccessfulRescale  3m7s  horizontal-pod-autoscaler  New size: 3; reason: cpu resource utilization (percentage of request) above target
     ```
 
-    In fact it seems that in the time between the commands above the short term average load increased sufficiently that the autoscaler having determined it wanted three pods then updated to realize it wanted 5 pods to meet the load. In this case if we look at the pods list we can see the details there
+    In fact, it seems that in the time between the commands above the short term average load increased sufficiently that the autoscaler having determined it wanted three pods.
 
 
   9. Let's look at those pods. In the OCI Cloud Shell type
@@ -487,31 +450,41 @@ Setup autoscale (normally of course this would be handled using modifications to
     <copy>kubectl top pods</copy>
     ```
 
-    ```
-    NAME                           CPU(cores)   MEMORY(bytes)   
-    stockmanager-86dbc548d-b8cbl   19m          425Mi           
-    storefront-79c465dc6b-2lvlr    64m          385Mi           
-    storefront-79c465dc6b-br87r    82m          647Mi           
-    storefront-79c465dc6b-jk5cq    73m          402Mi           
-    storefront-79c465dc6b-m55tc    62m          428Mi           
-    storefront-79c465dc6b-x8fbl    84m          1933Mi          
+    ``` 
+    NAME                                 CPU(cores)   MEMORY(bytes)   
+    load-generator                       343m         0Mi             
+    mushop-api-88bd7c499-tdv9j           1m           15Mi            
+    mushop-assets-7f97df7bbd-6t765       1m           7Mi             
+    mushop-edge-5d6f7ccf67-42x5x         33m          13Mi            
+    mushop-edge-5d6f7ccf67-966wz         31m          26Mi            
+    mushop-edge-5d6f7ccf67-b6j5k         35m          13Mi            
+    mushop-edge-5d6f7ccf67-c8kv8         37m          13Mi            
+    mushop-edge-5d6f7ccf67-fsdqm         33m          13Mi            
+    mushop-edge-5d6f7ccf67-hwvjp         36m          13Mi            
+    mushop-edge-5d6f7ccf67-p49p7         35m          14Mi            
+    mushop-edge-5d6f7ccf67-q4tb9         31m          13Mi            
+    mushop-edge-5d6f7ccf67-vrzrl         32m          13Mi            
+    mushop-session-864cb5b4db-czvbx      1m           7Mi             
+    mushop-storefront-7b685595df-26rxr   40m          1Mi             
+    mushop-storefront-7b685595df-49v55   95m          1Mi             
+    mushop-storefront-7b685595df-ftkjj   107m         1Mi          
 
     ```
 
-    All 5 pods are running and the service is distributing the load amongst them. Actually some of the storefront pods above are probably still in their startup phase as I gathered the above data immediately after getting the auto scale description.
+    All 3 pods are running and the service is distributing the load amongst them. If the above series of commands were executed in a *very* short period of time, some of the storefront pods may still in their startup phase.
 
   10. Let's get the autoscaler summary again. In the OCI Cloud Shell type
   
     ```bash
-    <copy>kubectl get hpa tbd</copy>
+    <copy>kubectl get hpa mushop-storefront</copy>
     ```
   
     ```
-    NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-    tbd   Deployment/tbd   30%/25%   2         5         5          30m
+    NAME                REFERENCE                      TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+    mushop-storefront   Deployment/mushop-storefront   66%/25%   1         3         3          30m
     ```
 
-    We can see that the average load across the deployment is still over 25%, if is had not reached the maximum number of pods then the auto scaler would be trying to meet our goal of no more than 50% average load by adding additional pods.
+    We can see that the average load across the deployment is still over 25%, if is had not reached the maximum number of pods then the auto scaler would be trying to meet our goal of no more than 25% average load by adding additional pods.
 
     If you want you can also see the pods being added in the Kubernetes dashboard,  
 
@@ -519,7 +492,7 @@ Setup autoscale (normally of course this would be handled using modifications to
 
   12. Make sure you are in your namespace
 
-  13. In the left menu Under workloads select **Deployments** then click on the `tbd` deployment
+  13. In the left menu under _workloads_ select **Deployments** then click on the `mushop-storefront` deployment.
 
   14. In the **Pods** section you can see that in this case it's scaled to 5 pods
 
@@ -533,13 +506,11 @@ Setup autoscale (normally of course this would be handled using modifications to
 
     ![Details of the auto scaled pods](images/autoscaling-pods-list.png)
 
-  17. In the load generator window(s) stop the script by typing Control-C
+  17. Return to the cloud shell window where the load generator is running. Stop the command by typing Control-C
 
     Note that the metrics server seems to operate on a decaying average basis, so stopping the load generating script will not immediately drop the per pod load. This means that it may take some time after stopping the load generator script for the autoscaler to start removing unneeded pods.   
 
     The autoscaler tries not to "thrash" the system by starting and stopping pods all the time. Because of this it will only remove pods every few minutes rather than immediately the load becomes low, additionally it will also only remove a few pods at a time. The [autoscaler documentation](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#algorithm-details) describes the algorythm.
-
-    For now let's delete the autoscaler to we can proceed with the next part of the lab with a known configuration
 
   18. In the OCI Cloud Shell type
   
@@ -555,14 +526,14 @@ Setup autoscale (normally of course this would be handled using modifications to
 
     To return to the numbers of replicas originally defined we'll use kubectl
 
-  19. In the OCI Cloud Shell type
+  19. If you would like to force the deployment to scale in, you can type the following in OCI Cloud Shell
   
     ```bash
-    <copy>kubectl scale --replicas=1 deployment tbd</copy>
+    <copy>kubectl scale --replicas=1 deployment mushop-storefront</copy>
     ```
 
     ```
-    deployment.apps/tbd scaled
+    deployment.apps/mushop-storefront scaled
     ```
 
     Now let's check what's happening
@@ -570,17 +541,16 @@ Setup autoscale (normally of course this would be handled using modifications to
   20. In the OCI Cloud Shell type
   
     ```bash
-    <copy>kubectl get deployment storefront</copy>
+    <copy>kubectl get deployment mushop-storefront</copy>
     ```
 
     ```
     NAME           READY   UP-TO-DATE   AVAILABLE   AGE
-    stockmanager   1/1     1            1           4d2h
     storefront     1/1     1            1           4d2h
 
     ```
 
-The number of pods is now back to one (it may be that you get a report of 2 pods still running, in which case try getting the deployments again a little bit later).
+The number of pods is now back to one (it may be that you get a report of 2 pods still running, in which case try getting the deployment again a little bit later).
 
 ## Task 4: Autoscaling on other metrics
 We have here looked at how to use CPU and memory to determine when to autoscale, that may be a good solution, or it may not. Kubernetes autoscaling can support the use of other metrics to manage autoscaling.
