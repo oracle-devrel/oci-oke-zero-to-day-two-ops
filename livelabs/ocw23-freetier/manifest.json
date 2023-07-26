@@ -43,6 +43,11 @@
       "filename":"../ocw23-livelabs/05-operations/operations-hpa.md"
     },
     {
+      "title": "Lab 5b: Ops - Kubernetes Cluster Auto Scaling",
+      "description" : "Setting up and enacting cluster auto scaling for node pools",
+      "filename":"../ocw23-livelabs/05-operations/operations-cluster-autoscale.md"
+    },
+    {
       "title": "Lab 6: Security and Observability of Kubernetes with OKE",
       "description" : "Leveraging built-in and 3rd party tools to monitor resources and enforce security best practices",
       "filename":"../ocw23-livelabs/06-security-observability/security-observability.md"

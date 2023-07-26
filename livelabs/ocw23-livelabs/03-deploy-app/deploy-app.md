@@ -55,7 +55,7 @@ Estimated time: 30 minutes
     </copy>
     ```
 
-## Task 2: Deploy the NGINX-Ingress Controller
+## Task 2: Deploy the *ingress-nginx* Controller
 
 The `ingress-nginx` controller is built and mainained as part of the Kubernetes project. Deplying it to your cluster is as simple as running one command. After that, we'll dive into how to configure and use the controller.
 
@@ -162,7 +162,7 @@ The first deployment was just a basic example that allowed us to quickly spin up
 
     >Note: To leave the _watch_ press `CTRL-C` anytime. If do not want to keep watching and just see the current list of PODS, just use `kubectl get pods`
 
-6. Make sure all the pods are in the `Running` state.
+6. Make sure all the pods are in the `Running` (or completed) state.
 
     ```
     <copy>kubectl get pods</copy>
@@ -180,20 +180,8 @@ The first deployment was just a basic example that allowed us to quickly spin up
     mushop-session-67bc86d446-jnq8w       1/1     Running     0          3m3s
     mushop-storefront-5747bd4644-tdn4v    1/1     Running     0          3m3s
     ```
-7. Find the EXTERNAL-IP assigned to the edge microservice. Open the IP address in your browser.
 
-    ```
-    <copy>kubectl get svc edge</copy>
-    ```
-
-    Sample response:
-
-    ```
-    NAME   TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AGE
-    edge   LoadBalancer   10.96.74.116   143.47.123.86   80:32756/TCP   3m31s
-    ```
-
-8. Open the MuShop storefront with your browser by connecting to http://< EXTERNAL-IP >
+7. Open the MuShop storefront with your browser by connecting to http://< EXTERNAL-IP >
 
     ![MuShop Storefront](images/mushop_storefront.png)
 
