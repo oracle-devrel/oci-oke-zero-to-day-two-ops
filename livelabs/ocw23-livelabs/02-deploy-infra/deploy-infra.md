@@ -74,7 +74,7 @@ Now that Kubernetes is up and running, interacting with the cluster is pretty mu
 
 1. First and foremost, what do we know about our new OKE cluster? Type `kubectl cluster-info` to find out!
 
-2. Take a look at the default set of namespaces with `kubectl get namespaces`. You should see *default*,*kube-node-lease*,*kube-public*, and *kube-system*.
+2. Take a look at the default set of namespaces with `kubectl get namespaces`. You should see *default*, *kube-node-lease*, *kube-public*, and *kube-system*.
 
 3. Check to see which pods are running across all namespaces with `kubectl get pods -o wide -A`. You should see the likes of coredns, flannel, kube-proxy, and more.
 

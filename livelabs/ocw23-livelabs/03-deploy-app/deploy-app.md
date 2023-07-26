@@ -19,7 +19,7 @@ Estimated time: 30 minutes
     ```
     <copy>
     kubectl run nginx --image=nginx --ports=80
-    <copy>
+    </copy>
     ```
 
 2. Use `kubectl get pods` to check status of the pod creation.
@@ -45,6 +45,15 @@ Estimated time: 30 minutes
     ![kubectl get svc](images/nginx-lb-service.png)
 
     ![sample app page](images/sample-app-page.png)
+
+6. Remove the resources to clean up before proceeding to the next task.
+
+    ```
+    <copy>
+    kubectl delete svc nginx
+    kubectl delete pod nginx
+    </copy>
+    ```
 
 ## Task 2: Deploy the NGINX-Ingress Controller
 
@@ -76,7 +85,7 @@ The `ingress-nginx` controller is built and mainained as part of the Kubernetes 
     </copy>
     ```
 
-*Notice* that it created a service type of Load Balancer with a public IP address? While its great to be able to easily expose a single deployment with a LoadBalancer, that may not give you the best control over your resource utilization.  With the ingress controller, we send all inbound traffic to a single load balancer, and tell NGINX how to distribute that traffic within our OKE cluster.
+*Notice* that it created a service type of Load Balancer with a public IP address? While its great to be able to easily expose a single deployment with a LoadBalancer, that may not give you the best control over your resource utilization.  With the ingress controller, we send all inbound traffic to a single load balancer and tell NGINX how to distribute that traffic within our OKE cluster.
 
 ## Task 3: Deploy another app and configure ingress
 
@@ -114,7 +123,30 @@ The first deployment was just a basic example that allowed us to quickly spin up
 
     ![Mushop directory structure](images/mushop_code.png)
 
-3. Remembering that helm provides a way of packaging and deploying configurable charts, next we will deploy the application in "mock mode" where cloud services are mocked, yet the application is fully functional.
+3. You will need to make one quick configuration change - add a parameter to the `values-mock.yaml` file to enable Ingress.
+
+    ```
+    <copy>
+    vi deploy/complete/helm-chart/mushop/values-mock.yaml
+    </copy>
+    ```
+
+    * type `i` to enter *insert* mode
+    * arrow down to the end of the file (may require a carriage return or two at the end)
+    * add the following:
+
+        ```
+        <copy>
+        ingress:
+          enabled: true
+        </copy>
+        ```
+
+    * press `[esc]`, then type `:wq` and press enter to save.
+
+
+
+4. Remembering that helm provides a way of packaging and deploying configurable charts, next we will deploy the application in "mock mode" where cloud services are mocked, yet the application is fully functional.
 
     ```
     <copy>
@@ -122,7 +154,7 @@ The first deployment was just a basic example that allowed us to quickly spin up
     </copy>
     ```
 
-4. It may take a few moments to download and run all the application images. You can run the following to observe:
+5. It may take a few moments to download and run all the application images. You can run the following to observe:
 
     ```
     <copy>kubectl get pods --watch</copy>
@@ -130,7 +162,7 @@ The first deployment was just a basic example that allowed us to quickly spin up
 
     >Note: To leave the _watch_ press `CTRL-C` anytime. If do not want to keep watching and just see the current list of PODS, just use `kubectl get pods`
 
-5. Make sure all the pods are in the `Running` state.
+6. Make sure all the pods are in the `Running` state.
 
     ```
     <copy>kubectl get pods</copy>
@@ -148,7 +180,7 @@ The first deployment was just a basic example that allowed us to quickly spin up
     mushop-session-67bc86d446-jnq8w       1/1     Running     0          3m3s
     mushop-storefront-5747bd4644-tdn4v    1/1     Running     0          3m3s
     ```
-6. Find the EXTERNAL-IP assigned to the edge microservice. Open the IP address in your browser.
+7. Find the EXTERNAL-IP assigned to the edge microservice. Open the IP address in your browser.
 
     ```
     <copy>kubectl get svc edge</copy>
@@ -161,7 +193,7 @@ The first deployment was just a basic example that allowed us to quickly spin up
     edge   LoadBalancer   10.96.74.116   143.47.123.86   80:32756/TCP   3m31s
     ```
 
-7. Open the MuShop storefront with your browser by connecting to http://< EXTERNAL-IP >
+8. Open the MuShop storefront with your browser by connecting to http://< EXTERNAL-IP >
 
     ![MuShop Storefront](images/mushop_storefront.png)
 

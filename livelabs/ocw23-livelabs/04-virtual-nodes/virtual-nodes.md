@@ -27,7 +27,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
     1. Compartment - Where you'd like the resources to be created. Use `root` if you've not created a separate compartment for this workshop.
     2. Region - The region in which the resources will be created. This should be your home region.
     3. You may leave the items under **OKE Inputs** all as default.
-    4. Check the box for *Ingress Controller.
+    4. Check the box for *Ingress Controller*.
 
     ![Stack Variables](images/02-stack-create-variables.png)
 
@@ -114,6 +114,8 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
                     number: 8089
     </copy>
     ```
+
+  >Note: You might notice that we've specified the ingress class of `nginx` here. The Terraform code deployed the ingress-nginx controller onto our new cluster automatically. Similar to the last lab, we'll use Nginx to handle all external traffic destined for our OKE cluster.
 
 8. Save the file and minimize code editor.
 
@@ -212,6 +214,21 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 6. Observe that the deployment has been updated to 2 replicas. One may yet be unavailable as the pod is being created. You can run `kubectl get pods` to monitor the status of its creation.
 
 **Nice work!** With Virtual Nodes for OKE you can easily deploy and manage all of your container-based workloads without having to manage the underlying compute infrastructure.
+
+## [optional] Task 6: Remove the second OKE cluster
+If you would like to experiment more with Virtual Nodes after the workshop you can certainly leave the cluster running. The suggestion to clean up now is made so that resources are not running when they are not being used. 
+
+The remainder of the workshop will utilize the OKE cluster you created in Lab 2.
+
+1. Return to the Resource Manager console and click the Stack `terraform-virtual-nodes...`
+
+2. On the stack details screen, click the **`[Destroy]`** button to remove all of the infrastructure previously created by Terraform.
+
+3. The *destroy* process will take several minutes to complete. Once successful, you can click **`More actions`** - **`Delete stack`**. 
+
+4. When prompted, clidk **`[Delete]`**.
+
+  ![Delete the Resource Manager stack](images/delete-stack.png)
 
 You may now **proceed to the next lab**.
 
