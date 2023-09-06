@@ -8,7 +8,9 @@ Estimated time: 15 minutes
 
 ### Objectives
 
-Ensure sufficient capacity is available to complete all labs and provision pre-requisite resources.
+* Ensure sufficient capacity is available to complete all labs 
+* Generate Auth token
+* Create new Compartment
 
 
 ## Task 1: Validate resource quotas / availability
@@ -20,29 +22,45 @@ Ensure sufficient capacity is available to complete all labs and provision pre-r
 
 3. Clear the **[Resource]** filter and type *Memory for standard.e3.flex* then select eh first result. Ensure you have at least 48GB available. (you'll allocate 16GB per node in your cluster)
 
-## Task 2: Jot down important information for later use
+## Task 2: Create a new compartment for the workshop
 
 1. Navigate to **`Identity and Security`** -> **`Compartments`**.
 
-2. Locate the **OCID** column for the compartment you plan to use for the workshop. In most csaes that will be the root compartment / tenancy name. Hover over the partially displayed OCID and click the *Copy* link.  Store the value in a text file for later use.
+2. Click **`[Create Compartment]`**, then provide a **Name** and **Description**. **Parent Compartment** should be *(root)*.
+
+    ![Create new compartment](images/create-compartment.png)
+
+3. Click **[`Create Compartment`]** to provision the resource.
+
+4. Once the Compartment in task 2 has been created, it will appear in the list of compartments.
+
+5. Locate the **OCID** column for the compartment you just created. Hover over the partially displayed OCID and click the *Copy* link.  Store the value in a text file for later use.
 
     ![Copy compartment OCID](images/compartment-ocid.png)
 
-3. Click the profile avatar in the top right corner of the console and select **My profile**
+## Task 3: Create an Auth Token
+
+1. Click the profile avatar in the top right corner of the console and select **My profile**
 
     ![Profile avatar and link](images/user-profile.png)
 
-4. Scroll down to the **Resources** Menu on the left side and view the available options. This is where you would create API Keys (for CLI, Terraform, SDK access) and Auth Tokens (i.e. access to OCI Container Registry).
+2. Scroll down to the **Resources** Menu on the left side and view the available options. This is where you would create API Keys (for CLI, Terraform, SDK access) and Auth Tokens (i.e. access to OCI Container Registry).
 
-5. Click **Auth tokens**
+3. Click **Auth tokens**
 
-6. Click **`[Generate token]`**, provide a description (i.e. *oke-workshop*), and click **`[Generate token]`** once more.
+4. Click **`[Generate token]`**, provide a description (i.e. *oke-workshop*), and click **`[Generate token]`** once more.
 
-7. The generated token will be displayed. Click the *Copy* link and paste the value into a text file for use later.
+5. The generated token will be displayed. Click the *Copy* link and paste the value into a text file for use later.
 
     ![Generated token dialog box](images/generated-token.png)
 
     >Note: As the dialog says, if you don't save it now, you won't be able to see the token after closing the window.
+
+## Task 4: Retrieve the Object storage namespace for your tenancy
+
+1. Click the profile avatar in the top right corner once again and select **Tenancy: <your tenancy name>**
+
+2. Locate the **Object storage namespace** item and copy the value. It is a 12-digit value.
 
 You may now **proceed to the next lab**.
 

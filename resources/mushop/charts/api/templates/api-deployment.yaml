@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "api.fullname" . }}
+  labels:
+{{ include "api.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      app.kubernetes.io/name: {{ include "api.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        version: {{ .Values.image.tag | quote }}
+        app.kubernetes.io/name: {{ include "api.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+          - name: MOCK_MODE
+            value: "{{ .Values.global.mock.service }}"
+          - name: SESSION_REDIS
+            value: {{ .Release.Name }}-session
+          - name: CATALOGUE_URL
+            value: http://{{ .Release.Name }}-catalogue
+          - name: ORDERS_URL
+            value: http://{{ .Release.Name }}-orders
+          - name: CARTS_URL
+            value: http://{{ .Release.Name }}-carts
+          - name: USERS_URL
+            value: http://{{ .Release.Name }}-user
+          - name: EVENTS_URL
+            value: http://{{ .Release.Name }}-events
+          - name: STATIC_MEDIA_URL
+            value: {{ .Values.env.mediaUrl }}
+          - name: NEWSLETTER_SUBSCRIBE_URL
+            value: "{{ .Values.env.newsletterSubscribeUrl }}"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+{{- if not .Values.global.okeVirtualNodesSupport }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+{{- else }}
+      automountServiceAccountToken: false
+{{- end }}

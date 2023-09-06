@@ -2,25 +2,31 @@
 
 ## Introduction
 
-In this lab you will levege **Quick create** feature to deploy a new OKE cluster along with all requisite virtual network resources. A couple of clicks is all it takes!
+In this lab you will leverage the **Quick create** feature to deploy a new OKE cluster along with all requisite virtual network resources. A couple of clicks is all it takes! You'll also create an OCI Container Registry repo and configure a Kubernetes secret.
 
 Estimated time: 30 minutes
 
 ### Objectives
 
-Learn how to quickly deploy a new OKE cluster without much hassle, so you can focus more on deploying and managing your applications.
+* Deploy an OKE cluster
+* Create a container image repo in OCIR
+* Register a new Kubernetes secret for authentication to OCIR
 
 ## Task 1: Provision an OKE Cluster
 
 1. Navigate to **`Developer Services`** -> **`Kubernetes Clusters (OKE)`**
 
-2. Click **`[Create cluster]`**, choose **Quick create**, and click **`[Submit]`**.
+2. Ensure the workshop compartment has been selected under **List scope** in the left nav bar.
+
+    ![Select appropriate compartment](images/list-scope.png)
+
+3. Click **`[Create cluster]`**, choose **Quick create**, and click **`[Submit]`**.
 
     ![quick create](images/oke-quick-create.png)
 
-3. Provide a name for your cluster (no spaces).
+4. Provide a name for your cluster (no spaces).
 
-4. Assign the following settings:
+5. Assign the following settings:
     1. Kubernetes API Endpoing: *Public endpoing*
     2. Node Type: *Managed*
     3. Kubernetes worker nodes: *Private workers*
@@ -32,13 +38,13 @@ Learn how to quickly deploy a new OKE cluster without much hassle, so you can fo
     6. Node count: *2*
         *You'll add more later*
 
-5. Click **`[Next]`**
+6. Click **`[Next]`**
 
-6. Confirm the resources to be created and click **`[Create cluster]`**
+7. Confirm the resources to be created and click **`[Create cluster]`**
 
-7. The cluster and associated network resources will begin creating. You can close the dialog page.
+8. The cluster and associated network resources will begin creating. You can close the dialog page.
 
-8. Feel free to explore the UI a bit, the cluster will take a short while to create.  Do not proceed until the large hexagon turns green.
+9. Feel free to explore the UI a bit, the cluster will take a short while to create.  Do not proceed until the large hexagon turns green.
 
 ## Task 2: Retrieve Kubeconfig and set up some shortcuts
 
@@ -79,6 +85,63 @@ Now that Kubernetes is up and running, interacting with the cluster is pretty mu
 3. Check to see which pods are running across all namespaces with `kubectl get pods -o wide -A`. You should see the likes of coredns, flannel, kube-proxy, and more.
 
 4. Are there any ingress resources defined? Try `kubectl get ingress -A` - the results should be empty as we've not yet deployed an ingress controller or defined any ingress resources.  
+
+5. Minimize (but do not exit) Cloud Shell.
+
+## Task 4: Create a Container Registry Repo
+
+The OCI Container Registry (OCIR) is a private, Dockerhub compliance service that enables you to storage and manage your container iamges securely within the confines of OCI. 
+
+1. Navigate to **`Developer Services`** -> **`Container Registry`**
+
+2. Click **Create repository**
+
+3. Provide a name for your repo and ensure it is set to **Private** access.
+
+    ![Create new repo](images/create-repo.png)
+
+4. Click **`[Create]`**
+
+## Task 5: Register a secret in Kubernetes
+
+1. First things first - you'll need to locate the region key for your selected region. This will be used to connect to the apprpriate Container Registry Endpoint. Return to Cloud Shell and enter the following command:
+
+    ```
+    <copy>
+    oci iam region list --query 'data[?name == `us-phoenix-1`].key'
+    </copy>
+    ```
+
+    >NOTE: if not using Phoenix, replace the region name with that which you've selected for the workshop.
+
+2. Your Container Register endpoint will thus be the **key** plus `.ocir.io`. *i.e.* `phx.ocir.io`
+
+3. For this next command you'll need to retrieve your Auth token which was created in the first lab. Construct the following command, making sure to input your own details:
+
+    ```
+    <copy>
+    kubectl create secret docker-registry ocirsecret --docker-server=<container registry endpoint> --docker-username=<complete username> --docker-password=<auth token> --docker-email=<your email address>
+    <copy>
+    ```
+    
+    * container registry endpoint = i.e. phx.ocir.io
+    * complete username = `<tenancy namespace>/<username or email address>`
+        *i.e. abc123dev456/eli.schilling@oracle.com*
+    * auth token = the value of the token created in lab 1
+
+4. Validate that the secret was created successfully:
+
+    ```
+    <copy>
+    kubectl get secrets
+    <copy>
+    ```
+
+    ```
+    user123@cloudshell:~ (us-phoenix-1)$ kubectl get secrets
+    NAME         TYPE                             DATA   AGE
+    ocirsecret   kubernetes.io/dockerconfigjson   1       3m
+    ```
 
 
 You may now **proceed to the next lab**.
