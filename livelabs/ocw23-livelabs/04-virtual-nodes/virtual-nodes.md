@@ -24,7 +24,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 3. You'll need to click the check box indicating acceptance for Oracle's T's and C's. Then click **`next`**.
 
 4. Fill in the available options when selected.
-    1. Compartment - Where you'd like the resources to be created. Use `root` if you've not created a separate compartment for this workshop.
+    1. Compartment - Where you'd like the resources to be created. Use `root` if you did not created a separate compartment for this workshop during lab 1.
     2. Region - The region in which the resources will be created. This should be your home region.
     3. You may leave the items under **OKE Inputs** all as default.
     4. Check the box for *Ingress Controller*.
@@ -37,7 +37,67 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
 7. Observe the job logs while the resources are created. You may move on to task 2 while this completes. 
 
-## Task 2: Create your manifest files
+## Task 2: Create a custom Docker image and push to OCIR
+
+1. In Cloud Shell, return to the Resources directory that was leveraged in Lab 3.
+
+  ```<copy>cd ~/resources</copy>```
+
+2. Run the `docker login` command to authenticate to the Container Registry.  You'll need the username and password (auth toke) captured during lab 1.
+
+  ```<copy>
+  docker login phx.ocir.io
+  </copy>
+  ```
+
+  >Note: Replace `phx` with the region key for your chosen region
+
+  ```shell
+  eli_devrel@cloudshell:resources (us-phoenix-1)$ docker login phx.ocir.io
+  Username (abc123def456/eli.devrel@gmail.com): abc123def456/eli.devrel@gmail.com
+  Password: 
+  WARNING! Your password will be stored unencrypted in /home/eli_devrel/.docker/config.json.
+  Configure a credential helper to remove this warning. See
+  https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+  Login Succeeded
+  ```
+
+3. Now its time to build:
+
+  ```
+  <copy>
+  docker build . -t sample-app
+  </copy>
+  ```
+
+4. ...and tag the Docker image.
+
+  ```
+  <copy>
+  docker tag sample-app:latest phx.ocir.io/<tenancy namespace>/<repo-name>:version
+  </copy>
+  ```
+
+  For example: `docker tag sample-app:latest phx.ocir.io/abc123def456/okeapprepo:latest`
+
+  >Note: Because the Container Registry is Dockerhub compliant, it is not inherently aware of OCI Compartments. When tagging your image, we associate the repo name as the container image `okeapprepo` so Container Registry knows where to place the bits. If you alter the name or append additional characters, OCIR will attempt to create a new repo in the root directory to match the name.
+
+5. If you now run `docker images` you'll see a new copy of that image with the corresponding tag.
+
+6. Now you can push the image to the Container Registry (be sure to use the correct image tag based on what you created):
+
+  ```
+  <copy>
+  docker push phx.ocir.io/abc123def456/okeapprepo:latest
+  <copy>
+  ```
+
+7. Once the push is complete, you can minimize Cloud Shell and return to the Container Registry UI to verify the image was placed correctly.
+
+  ![Validate image in repo](images/ocir-image-pushed.png)
+
+## Task 3: Create the Kubernetes manifest files
 
 1. Open Code Editor from the OCI Console.
 
@@ -69,9 +129,11 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
         spec:
           containers:
           - name: snake
-            image: aschil/snake
+            image: phx.ocir.io/axhc9zgtyjst/okeapprepo:latest
             ports:
             - containerPort: 8080
+          imagePullSecrets:
+          - name: ocirsecret
     ---
     apiVersion: v1
     kind: Service

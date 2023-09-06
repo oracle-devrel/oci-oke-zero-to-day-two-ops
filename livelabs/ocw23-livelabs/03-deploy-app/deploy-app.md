@@ -95,24 +95,19 @@ The first deployment was just a basic example that allowed us to quickly spin up
 
 ![MuShop Architecture](images/mushop_diagram.png)
 
-1. From Cloud Shell, clone the Github repo.
+1. Retrieve the resources.zip file that contains the HELM charts for deploying MuShop.
 
     ```
     <copy>
-    git clone https://github.com/oracle-quickstart/oci-cloudnative.git mushop
+    wget <TODO: Add PAR here>
     </copy>
     ```
 
-    Sample response:
+2. Unzip the files and open the containing directory.
 
-    ```
-    Cloning into 'mushop'...
-    remote: Enumerating objects: 23629, done.
-    remote: Counting objects: 100% (429/429), done.
-    remote: Compressing objects: 100% (230/230), done.
-    remote: Total 23629 (delta 265), reused 343 (delta 198), pack-reused 23200
-    Receiving objects: 100% (23629/23629), 28.26 MiB | 31.69 MiB/s, done.
-    Resolving deltas: 100% (14463/14463), done.
+    ```<copy>unzip resources.zip && cd resources</copy>```
+
+3
     ```
 
 2. Change to the Mushop directory
@@ -123,46 +118,11 @@ The first deployment was just a basic example that allowed us to quickly spin up
 
     ![Mushop directory structure](images/mushop_code.png)
 
-3. You will need to make two quick configuration changes:
-
-    1. add a parameter to the `values-mock.yaml` file to enable Ingress.
-
-        ```
-        <copy>
-        vi deploy/complete/helm-chart/mushop/values-mock.yaml
-        </copy>
-        ```
-
-        * type `i` to enter *insert* mode
-        * arrow down to the end of the file (may require a carriage return or two at the end)
-        * add the following:
-
-            ```
-            <copy>
-            ingress:
-            enabled: true
-            </copy>
-            ```
-
-        * press `[esc]`, then type `:wq` and press enter to save.
-
-    2. Remove horizontal pod autoscaling (HPA) from the **storefront** helm chart. You will configure HPA in a later lab.
-
-        ```
-        <copy>
-        vi deploy/complete/helm-chart/mushop/charts/storefront/values.yaml
-        </copy>
-        ```
-
-        * arrow down to the `hpa:` section
-        * edit the `enabled:` value to **false**
-        * exit and save
-
-4. Remembering that helm provides a way of packaging and deploying configurable charts, next we will deploy the application in "mock mode" where cloud services are mocked, yet the application is fully functional.
+3. Remembering that Helm provides a way of packaging and deploying configurable charts, next we will deploy the application in "mock mode" where cloud services are mocked, yet the application is fully functional.
 
     ```
     <copy>
-    helm upgrade --install mushop ./deploy/complete/helm-chart/mushop -f ./deploy/complete/helm-chart/mushop/values-mock.yaml
+    helm upgrade --install mushop ./mushop -f ./mushop/values-workshop.yaml 
     </copy>
     ```
 
