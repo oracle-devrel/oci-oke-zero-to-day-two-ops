@@ -134,7 +134,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
         spec:
           containers:
           - name: snake
-            image: phx.ocir.io/axhc9zgtyjst/okeapprepo:latest
+            image: phx.ocir.io/<tenancy namespace>/okeapprepo:latest
             ports:
             - containerPort: 8080
           imagePullSecrets:
@@ -151,7 +151,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
         - port: 80
           targetPort: 8080
       type: ClusterIP
-    </copy>
+      </copy>
     ```
 5. Click **File** -> **Save** to save your changes.
 
@@ -199,7 +199,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 4. View the kube config file created in lab 3 and locate the context name.
 
     ```
-    <copy>kubectl config view-contexts</copy>
+    <copy>kubectl config get-contexts</copy>
     ```
 
     ![Kube Config Sample](images/kubectl-current-context.png)
@@ -210,7 +210,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
     ```
     <copy>
-    kubectl config rename-context `old name` `new name`
+    kubectl config rename-context <old name> <new name>
     </copy>
     ```
 
@@ -218,7 +218,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
 6. Now, paste the command copied in step 2 and press enter.
 
-7. The new cluster is added to your config file. At this point, you may also choose to rename the context for the new cluster. First, `view-contexts` to get the name, then `rename-context` to update it.
+7. The new cluster is added to your config file. At this point, you may also choose to rename the context for the new cluster. First, `get-contexts` to get the name, then `rename-context` to update it.
 
 7. Run the following command to switch context to the new cluster:
 
@@ -228,12 +228,25 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
     </copy>
     ```
 
+8. Since you're now working on a new Kubernetes cluster, you'll need to create a secret here for pulling the sample app image. Construct the following command like you did in Lab 2, making sure to input your own details:
+
+    ```
+    <copy>
+    kubectl create secret docker-registry ocirsecret --docker-server=<container registry endpoint> --docker-username=<complete username> --docker-password=<auth token> --docker-email=<your email address>
+    <copy>
+    ```
+    
+    * container registry endpoint = i.e. phx.ocir.io
+    * complete username = `<tenancy namespace>/<username or email address>`
+        *i.e. abc123dev456/eli.schilling@oracle.com*
+    * auth token = the value of the token created in lab 1
+
 ## Task 4: Deploy the app
 
 1. Run the following command:
 
     ```
-    <copy>kubectl create -f sample-app-dep.yaml,sample-app-ingres.yaml</copy>
+    <copy>kubectl create -f sample-app-dep.yaml,sample-app-ingress.yaml</copy>
     ```
 
 2. It will take about 60 seconds to instantiate the application pod. You can run the following to check status:
