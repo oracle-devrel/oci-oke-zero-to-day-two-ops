@@ -8,17 +8,13 @@ In this lab you will explore some of the fundamental capabilities of Kubernetes 
     1. Using the Kubernetes Dashboard
     2. Cluster and Node Pool Upgrades
     3. Creating and scaling node pools
-    4. Leveraging Preemtible worker nodes
-    5. Monitoring your cluster with OCI Logging Analytics
-2. Operational tasks:
-    1. Namespaces
-    2. Horizontal pod scaling
-    3. Perform rolling updates
-    4. Rolling back an update
-    5. Node Affinity (taints and tolerations)
-    6. Persistent storage
-    7. Working with secrets (OCI Vault and Azure Key Vault)
-    8. Utilizing image pull secrets
+    4. Working with Cluster auto scaling
+2. Operational tasks
+    1. Manually scaling an existing deployment (K8s dashboard)
+    2. Perform rolling updates
+    3. Rolling back an update
+    4. Horizontal pod scaling
+    5. Working with Cluster 
 
 Estimated time: 45 minutes
 
@@ -220,15 +216,14 @@ Why would you want to scale manually? Generally this is done for testing purpose
 
 10. That's it! You're ready to move on to the next task.
 
-<detail><summary><b>Why scale the deployment and not the replica set?</b></summary>
+<details><summary><b>Why scale the deployment and not the replica set?</b></summary>
 Kubernetes technically supports scaling on the replica set as well as the deployment, however what actually controls the scaling is the replication controller. If you try and change the number of replicas directly in the replica set it will (briefly) make the change.
 
 Unfortunately the replication controller that is connected to the deployment doesn't pick up on changes to the replica set, only to the deployment, so the deployment replication controller will recognize the change in pods and will immediately try and correct the situation and revert the change.
+
 ---
-</detail>
 
-
-
+</details>
 
 ## Task 3: Working with Cluster Auto scaling
 You can use the Kubernetes Cluster Autoscaler to automatically resize a cluster's managed node pools based on application workload demands. By automatically resizing a cluster's node pools, you can ensure application availability and optimize costs.
@@ -238,7 +233,7 @@ The Kubernetes Cluster Autoscaler is a standalone program that:
 * Adds worker nodes to a node pool when a pod cannot be scheduled in the cluster because of insufficient resource constraints.
 * Removes worker nodes from a node pool when the nodes have been underutilized for an extended time, and when pods can be placed on other existing nodes.
 
-<detail><summary><b>Additional information: Kubernetes Cluster Autoscaler</b></summary>
+<details><summary><b>Additional information: Kubernetes Cluster Autoscaler</b></summary>
 
 The Kubernetes Cluster Autoscaler increases or decreases the size of a node pool automatically based on resource requests, rather than on resource utilization of nodes in the node pool.
 
@@ -247,29 +242,13 @@ The Kubernetes Cluster Autoscaler works on a per-node pool basis. You use a conf
 To enable the Kubernetes Cluster Autoscaler to automatically resize a cluster's node pools based on application workload demands, always include resource request limits in pod specifications (requests: under resources:).
 
 ---
-</detail>
+</details>
 
 
 
 Instructions here
 
-## Task 3: Create a logging namespace
 
-...
-
-## Task 4: Scaling your deployment with a new replica set
-
-...
-
-## Task 5: Rolling back a deployment update
-
-...
-
-Create a secret in OCI Vault and another in Azure Key Vault (maybe).
-
-## Task 8: Create and utilize an imagePullSecret
-
-...
 
 
 ## Acknowledgements
