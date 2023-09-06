@@ -41,18 +41,23 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
 1. In Cloud Shell, return to the Resources directory that was leveraged in Lab 3.
 
-  ```<copy>cd ~/resources</copy>```
+  ```
+  <copy>
+  cd ~/resources
+  </copy>
+  ```
 
 2. Run the `docker login` command to authenticate to the Container Registry.  You'll need the username and password (auth toke) captured during lab 1.
 
-  ```<copy>
+  ```
+  <copy>
   docker login phx.ocir.io
   </copy>
   ```
 
   >Note: Replace `phx` with the region key for your chosen region
 
-  ```shell
+  ```bash
   eli_devrel@cloudshell:resources (us-phoenix-1)$ docker login phx.ocir.io
   Username (abc123def456/eli.devrel@gmail.com): abc123def456/eli.devrel@gmail.com
   Password: 
@@ -87,7 +92,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
 6. Now you can push the image to the Container Registry (be sure to use the correct image tag based on what you created):
 
-  ```
+  ```bash
   <copy>
   docker push phx.ocir.io/abc123def456/okeapprepo:latest
   <copy>
@@ -143,7 +148,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
       selector:
         app: snake-game
       ports:
-        - port: 8089
+        - port: 80
           targetPort: 8080
       type: ClusterIP
     </copy>
@@ -173,7 +178,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
                 service:
                   name: snake-game-svc
                   port:
-                    number: 8089
+                    number: 80
     </copy>
     ```
 
@@ -181,7 +186,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
 8. Save the file and minimize code editor.
 
-## Task 3: Connect to the new cluster
+## Task 4: Connect to the new cluster
 
 1. Time to check back in on Resource Manager and see how the stack deployment is going. When it finishes, you can navigate to **Developer Services** -> **Kubernetes Clusters (OKE)** using the hamburger menu in the top left corner of the browser window.
 
@@ -194,7 +199,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 4. View the kube config file created in lab 3 and locate the context name.
 
     ```
-    <copy>kubectl config view-contexts
+    <copy>kubectl config view-contexts</copy>
     ```
 
     ![Kube Config Sample](images/kubectl-current-context.png)
@@ -205,7 +210,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
     ```
     <copy>
-    kubectl config rename-context <old name> <new name>
+    kubectl config rename-context `old name` `new name`
     </copy>
     ```
 
