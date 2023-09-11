@@ -136,7 +136,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
           - name: snake
             image: phx.ocir.io/<tenancy namespace>/okeapprepo:latest
             ports:
-            - containerPort: 8080
+            - containerPort: 80
           imagePullSecrets:
           - name: ocirsecret
     ---
@@ -149,7 +149,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
         app: snake-game
       ports:
         - port: 80
-          targetPort: 8080
+          targetPort: 80
       type: ClusterIP
       </copy>
     ```
@@ -167,12 +167,12 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
       name: snake-game 
       annotations:
         kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/rewrite-target: /
+        nginx.ingress.kubernetes.io/rewrite-target: /$1
     spec:
       rules:
       - http:
           paths:
-            - path: /snake
+            - path: /snake/(.*)
               pathType: Prefix
               backend:
                 service:
@@ -241,7 +241,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
         *i.e. abc123dev456/eli.schilling@oracle.com*
     * auth token = the value of the token created in lab 1
 
-## Task 4: Deploy the app
+## Task 5: Deploy the app
 
 1. Run the following command:
 
@@ -267,7 +267,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
 5. Set the game to difficult and see if you can achieve a higher score than anyone else.
 
-## Task 5: Scale out
+## Task 6: Scale out
 
 1. Return to your cloud shell window and enter the following command:
 

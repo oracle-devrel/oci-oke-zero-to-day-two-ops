@@ -11,12 +11,35 @@ payment:
 
 assets:
   enabled: true
+  hpa:
+    enabled: false
 
 nats:
   enabled: false
 
 fulfillment:
   enabled: false
+
+storefront:
+  enabled: true
+  hpa:
+    enabled: false
+
+user:
+  hpa:
+    enabled: false
+  
+catalogue:
+  hpa:
+    enabled: false
+  
+api:
+  hpa:
+    enabled: false
+  
+edge:
+  hpa:
+    enabled: false
   
 ingress:
   enabled: true
