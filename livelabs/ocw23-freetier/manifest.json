@@ -60,27 +60,7 @@
     {
       "title": "Lab 7: Automating OKE App Deployment with OCI DevOps",
       "description" : "Streamlining app build and delivery with OCI DevOps service",
-      "filename":"https://oracle-livelabs.github.io/developer/oci-devops-cicd-canary-oke/intro/intro.md"
-    },
-    {
-      "title": "Lab :7a Provision the infrastructure",
-      "description": "Instruction to provision OCI devops ,OKE and related infrastructure",
-      "filename": "https://oracle-livelabs.github.io/developer/oci-devops-cicd-canary-oke/deploy-infra/deploy-infra.md"
-    },
-    {
-      "title": "Lab 7b: Get to know more about OCI Devops components",
-      "description": "Get to know more about OCI devops components and artifacts",
-      "filename": "https://oracle-livelabs.github.io/developer/oci-devops-cicd-canary-oke/devops-resources/devops-resources.md"
-    },
-    {
-      "title": "Lab 7c: New version release",
-      "description": "Release a new version and experience canary mode",
-      "filename": "https://oracle-livelabs.github.io/developer/oci-devops-cicd-canary-oke/newrelease/newrelease.md"
-    },
-    {
-      "title": "Lab 7d: Cleanup of DevOps resources",
-      "description" : "Clean all the lab infra components",
-      "filename":"https://oracle-livelabs.github.io/developer/oci-devops-cicd-canary-oke/cleanup/cleanup.md"
+      "filename":"../ocw23-livelabs/07-devops/devops.md"
     },
     {
       "title": "Lab 8: Cleaning up your tenancy",
