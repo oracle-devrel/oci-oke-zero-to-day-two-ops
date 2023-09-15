@@ -98,31 +98,30 @@ The first deployment was just a basic example that allowed us to quickly spin up
 1. Retrieve the resources.zip file that contains the HELM charts for deploying MuShop.
 
     ```
-    <copy>
-    wget <TODO: Add PAR here>
+    <copy>bash
+    wget objectstoreparurl-here
     </copy>
     ```
 
 2. Unzip the files and open the containing directory.
 
-    ```<copy>unzip resources.zip && cd resources</copy>```
-
-3
+    ```bash
+    <copy>unzip resources.zip && cd resources</copy>
     ```
 
-2. Change to the Mushop directory
+3. View the contents of the Mushop directory
 
     ```
-    <copy>cd mushop</copy>
+    <copy>ls -al mushop</copy>
     ```
 
     ![Mushop directory structure](images/mushop_code.png)
 
-3. Remembering that Helm provides a way of packaging and deploying configurable charts, next we will deploy the application in "mock mode" where cloud services are mocked, yet the application is fully functional.
+4. Remembering that Helm provides a way of packaging and deploying configurable charts, next we will deploy the application in "mock mode" where cloud services are mocked, yet the application is fully functional.
 
-    ```
+    ```bash
     <copy>
-    helm upgrade --install mushop ./mushop -f ./mushop/values-workshop.yaml 
+    helm upgrade --install mushop ./mushop -f ./mushop/values-workshop.yaml
     </copy>
     ```
 
@@ -248,4 +247,4 @@ You may now **proceed to the next lab**.
 
 * **Author** - Eli Schilling (Developer Advocate)
 * **Contributors** - Adao Oliveira Junior (Solutions Architect)
-* **Last Updated By/Date** - Eli Schilling, July 2023
+* **Last Updated By/Date** - Eli Schilling, August 2023
