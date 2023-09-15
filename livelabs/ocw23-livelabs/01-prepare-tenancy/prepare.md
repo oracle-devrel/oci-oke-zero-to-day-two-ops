@@ -60,7 +60,9 @@ Estimated time: 15 minutes
 
 1. Click the profile avatar in the top right corner once again and select **Tenancy: <your tenancy name>**
 
-2. Locate the **Object storage namespace** item and copy the value. It is a 12-digit value.
+2. Locate the **Object storage namespace** item and copy the value. Store this 12-digit string in a safe place...you'll need it later.
+
+    ![Tenancy object storage namespace](images/tenancy-namespace.png)
 
 You may now **proceed to the next lab**.
 

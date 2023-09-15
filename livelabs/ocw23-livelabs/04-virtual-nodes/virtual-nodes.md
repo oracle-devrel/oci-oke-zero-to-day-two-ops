@@ -70,19 +70,19 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
 3. Now its time to build:
 
-  ```
-  <copy>
-  docker build . -t sample-app
-  </copy>
-  ```
+    ```
+    <copy>
+    docker build . -t sample-app
+    </copy>
+    ```
 
 4. ...and tag the Docker image.
 
-  ```
-  <copy>
-  docker tag sample-app:latest phx.ocir.io/<tenancy namespace>/<repo-name>:version
-  </copy>
-  ```
+    ```
+    <copy>
+    docker tag sample-app:latest phx.ocir.io/<tenancy namespace>/<repo-name>:version
+    </copy>
+    ```
 
   For example: `docker tag sample-app:latest phx.ocir.io/abc123def456/okeapprepo:latest`
 
@@ -92,11 +92,11 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
 6. Now you can push the image to the Container Registry (be sure to use the correct image tag based on what you created):
 
-  ```bash
-  <copy>
-  docker push phx.ocir.io/abc123def456/okeapprepo:latest
-  <copy>
-  ```
+    ```bash
+    <copy>
+    docker push phx.ocir.io/abc123def456/okeapprepo:latest
+    <copy>
+    ```
 
 7. Once the push is complete, you can minimize Cloud Shell and return to the Container Registry UI to verify the image was placed correctly.
 
@@ -167,12 +167,12 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
       name: snake-game 
       annotations:
         kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/rewrite-target: /$1
+        nginx.ingress.kubernetes.io/rewrite-target: /
     spec:
       rules:
       - http:
           paths:
-            - path: /snake/(.*)
+            - path: /
               pathType: Prefix
               backend:
                 service:
@@ -237,7 +237,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
     ```
     
     * container registry endpoint = i.e. phx.ocir.io
-    * complete username = `<tenancy namespace>/<username or email address>`
+    * complete username = `[tenancy namespace]/[username or email address]`
         *i.e. abc123dev456/eli.schilling@oracle.com*
     * auth token = the value of the token created in lab 1
 
@@ -246,7 +246,9 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 1. Run the following command:
 
     ```
-    <copy>kubectl create -f sample-app-dep.yaml,sample-app-ingress.yaml</copy>
+    <copy>
+    kubectl create -f sample-app-dep.yaml,sample-app-ingress.yaml
+    </copy>
     ```
 
 2. It will take about 60 seconds to instantiate the application pod. You can run the following to check status:
@@ -319,6 +321,6 @@ You may now **proceed to the next lab**.
 
 ## Acknowledgements
 
-* **Author** - 
-* **Contributors** -
-* **Last Updated By/Date** -
+* **Author** - Eli Schilling (Developer Advocate)
+* **Contributors** - Chip Hwang (Developer Advocate)
+* **Last Updated By/Date** - August 2023

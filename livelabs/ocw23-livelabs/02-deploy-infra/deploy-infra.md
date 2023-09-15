@@ -27,15 +27,17 @@ Estimated time: 30 minutes
 4. Provide a name for your cluster (no spaces).
 
 5. Assign the following settings:
-    1. Kubernetes API Endpoing: *Public endpoing*
-    2. Node Type: *Managed*
-    3. Kubernetes worker nodes: *Private workers*
-    4. Shape and image:
+    1. Kubernetes version: *v1.26.2*
+        * This is not the latest version. This is intentional. This is the way.
+    2. Kubernetes API Endpoint: *Public endpoint*
+    3. Node Type: *Managed*
+    4. Kubernetes worker nodes: *Private workers*
+    5. Shape and image:
         1. Pod shape: *VM.Standard.E3.Flex*
         2. Nmber of OCPUs: *1*
         3. Amount of memory (GB): *16*
-    5. Image: *Oracle Linux 8* (latest)
-    6. Node count: *2*
+    6. Image: *Oracle Linux 7.9* (default)
+    7. Node count: *2*
         *You'll add more later*
 
 6. Click **`[Next]`**
@@ -62,15 +64,21 @@ Estimated time: 30 minutes
 
     1. Create an alias for the **`kubectl`** command.
 
-        ```<copy>alias k=kubectl</copy>```
+        ```
+        <copy>alias k=kubectl</copy>
+        ```
 
     2. Create an alias for **`kubectl get`**
 
-        ```<copy>alias kg='kubectl get'</copy>```
+        ```
+        <copy>alias kg='kubectl get'</copy>
+        ```
 
     3. Create an alias for **`kubectl delete`** (in this case we use *rm* to emulate the bash shell)
 
-        ```<copy>alias krm='kubectl delete'</copy>```
+        ```
+        <copy>alias krm='kubectl delete'</copy>
+        ```
 
 **NOTE:** During the remainder of the workshop, `kubectl` commands will be typed out in full. If you opted to create aliases, don't forget to use them.
 

@@ -93,7 +93,7 @@ The first deployment was just a basic example that allowed us to quickly spin up
 
 [MuShop](https://oracle-quickstart.github.io/oci-cloudnative/cloud/) is a microservices demo application **purpose-built** to showcase interoperable `Cloud Native` services on `Oracle Cloud Infrastructure`, and to demonstrate a number of clout native methodologies. While the complete deployment leverages a wide variety of services, we'll be deploying a simple version of the application to maintain focus on OKE.
 
-![MuShop Architecture](images/mushop_diagram.png)
+    ![MuShop Architecture](images/mushop_diagram.png)
 
 1. Retrieve the resources.zip file that contains the HELM charts for deploying MuShop.
 
