@@ -127,7 +127,7 @@ The instructions below will take you through creating a new repo via the Web UI.
 
 1. First things first - you'll need to locate the region key for your selected region. This will be used to connect to the apprpriate Container Registry Endpoint. Return to Cloud Shell and enter the following command:
 
-    ```
+    ```bash
     <copy>
     oci iam region list --query 'data[?name == `us-phoenix-1`].key'
     </copy>
@@ -139,10 +139,10 @@ The instructions below will take you through creating a new repo via the Web UI.
 
 3. For this next command you'll need to retrieve your Auth token which was created in the first lab. Construct the following command, making sure to input your own details:
 
-    ```
+    ```bash
     <copy>
-    kubectl create secret docker-registry ocirsecret --docker-server=<container registry endpoint> --docker-username=<complete username> --docker-password=<auth token> --docker-email=<your email address>
-    <copy>
+    kubectl create secret docker-registry ocirsecret --docker-server='container registry endpoint' --docker-username='complete username' --docker-password='auth token' --docker-email='your email address'
+    </copy>
     ```
     
     * container registry endpoint = i.e. phx.ocir.io
