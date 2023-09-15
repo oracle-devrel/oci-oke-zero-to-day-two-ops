@@ -28,7 +28,7 @@ Estimated time: 30 minutes
 
 5. Assign the following settings:
     1. Kubernetes version: *v1.26.2*
-        * This is not the latest version. This is intentional. This is the way.
+        This is not the latest version. This is intentional. This is the way.
     2. Kubernetes API Endpoint: *Public endpoint*
     3. Node Type: *Managed*
     4. Kubernetes worker nodes: *Private workers*
@@ -98,7 +98,20 @@ Now that Kubernetes is up and running, interacting with the cluster is pretty mu
 
 ## Task 4: Create a Container Registry Repo
 
-The OCI Container Registry (OCIR) is a private, Dockerhub compliance service that enables you to storage and manage your container iamges securely within the confines of OCI. 
+The OCI Container Registry (OCIR) is a secure, Dockerhub-compliant service that enables you to store and manage your container iamges securely, within the confines of OCI. 
+
+<details><summary><b>Prefer to work with the CLI?</b></summary>
+
+The instructions below will take you through creating a new repo via the Web UI. If you'd prefer to create the repo using the OCI CLI, you may remain in Cloud Shell and run this command (make sure to adjust the parameter value to reflect your own compartment OCID).
+
+    ```bash
+    <copy>
+	oci artifacts container repository create --compartment-id ocid1.compartment.oc1..aaaaaaaace...... --display-name okeapprepo
+    </copy>
+    ```
+
+---
+</details>
 
 1. Navigate to **`Developer Services`** -> **`Container Registry`**
 
