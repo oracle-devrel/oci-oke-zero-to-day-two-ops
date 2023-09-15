@@ -18,13 +18,13 @@ Estimated time: 30 minutes
 
     ```
     <copy>
-    kubectl run nginx --image=nginx --ports=80
+    kubectl run nginx --image=nginx
     </copy>
     ```
 
 2. Use `kubectl get pods` to check status of the pod creation.
 
-3. Create a service to expose the application. The cluster is integrated with OCI Cloud Conroller Manager (CCM). As a result, creating a service of type *--type=LoadBalancer* will expose the pod tot he internet using an OCI Load Balancer. Run the following command:
+3. Create a service to expose the application. The cluster is integrated with OCI Cloud Conroller Manager (CCM). As a result, creating a service of type *--type=LoadBalancer* will expose the pod to the internet using an OCI Load Balancer. Run the following command:
 
     ```
     <copy>
@@ -93,13 +93,13 @@ The first deployment was just a basic example that allowed us to quickly spin up
 
 [MuShop](https://oracle-quickstart.github.io/oci-cloudnative/cloud/) is a microservices demo application **purpose-built** to showcase interoperable `Cloud Native` services on `Oracle Cloud Infrastructure`, and to demonstrate a number of clout native methodologies. While the complete deployment leverages a wide variety of services, we'll be deploying a simple version of the application to maintain focus on OKE.
 
-    ![MuShop Architecture](images/mushop_diagram.png)
+   ![MuShop Architecture](images/mushop_diagram.png)
 
 1. Retrieve the resources.zip file that contains the HELM charts for deploying MuShop.
 
-    ```
-    <copy>bash
-    wget objectstoreparurl-here
+    ```bash
+    <copy>
+    wget https://objectstorage.us-phoenix-1.oraclecloud.com/p/sddgGnqEMQFT71q5sWTa-_6FWInMY5O0svrivV05vB0mHHSatCqhqgCkLto4LarL/n/axhc9zgtyjst/b/workshop/o/resources.zip
     </copy>
     ```
 
@@ -114,8 +114,6 @@ The first deployment was just a basic example that allowed us to quickly spin up
     ```
     <copy>ls -al mushop</copy>
     ```
-
-    ![Mushop directory structure](images/mushop_code.png)
 
 4. Remembering that Helm provides a way of packaging and deploying configurable charts, next we will deploy the application in "mock mode" where cloud services are mocked, yet the application is fully functional.
 
@@ -245,6 +243,6 @@ You may now **proceed to the next lab**.
 
 ## Acknowledgements
 
-* **Author** - Eli Schilling (Developer Advocate)
-* **Contributors** - Adao Oliveira Junior (Solutions Architect)
+* **Author** - Oracle
+* **Contributors** - Adao Oliveira Junior (Solutions Architect), Eli Schilling (Developer Advocate)
 * **Last Updated By/Date** - Eli Schilling, August 2023
