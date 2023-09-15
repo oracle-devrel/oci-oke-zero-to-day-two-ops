@@ -53,7 +53,12 @@
       "filename":"../ocw23-livelabs/06-security-observability/security-observability.md"
     },
     {
-      "title": "Lab 6a: Encrypting Volumes with Customer Managed Keys",
+      "title": "Lab 6a: Security Controls with Neuvector and Sigstore",
+      "description" : "Leverage open source tools to implement zero trust and apply governance to your Kubernetes environment.",
+      "filename":"../ocw23-livelabs/06-security-observability/sec-controls.md"
+    },
+    {
+      "title": "Lab 6d: Encrypting Volumes with Customer Managed Keys",
       "description" : "Utilize cutsomer-managed keys and OCI vault for data encryption of dynamically provisioned volumes.",
       "filename":"../ocw23-livelabs/06-security-observability/sec-data_encryption.md"
     },

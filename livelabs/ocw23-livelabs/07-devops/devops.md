@@ -26,6 +26,7 @@ In this lab, you will:
 1. [Familiarity with Compartments](https://docs.us-phoenix-1.oraclecloud.com/Content/GSG/Concepts/concepts.htm)
 1. [OCI DevOps services.](https://docs.oracle.com/en-us/iaas/Content/devops/using/home.htm)
 
+    >Note: Click [Expand All Tasks] above to learn a bit more about the workshop. When you're ready to get started, **[click here to begin](https://apexapps.oracle.com/pls/apex/r/dbpm/livelabs/view-workshop?wid=3324&clear=RR,180&session=3406880949228)**.
 
 ## Cloud Native Applications Overview
 
@@ -67,10 +68,6 @@ However, you should be aware of these drawbacks:
 - Fetching feedback from user testing against a new release is time-consuming.
 
 ![](images/oci-canary-oke-ref-arch.png)
-
-
-
-When you're ready to complete this workshop, **[click here to begin](https://apexapps.oracle.com/pls/apex/r/dbpm/livelabs/view-workshop?wid=3324&clear=RR,180&session=3406880949228)**.
 
 
 ## Learn More
