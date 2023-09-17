@@ -77,6 +77,7 @@ A dynamic group is required to identify the compute resources that will be grant
 
     <details><summary><b>What permissions did we just create?</b></summary>
     The policy statements above grant the worker nodes (those in the compartment we specified in the dynamic group) access to manage the node pool itself (in order to change the number of worker nodes). It also grants access to create the compute resources in the compartment. **Use subnets** and **Use vnics** allows for the creation of a virtual network interface for the Compute instance, in our OKE node pool subnet.
+
     ---
     </details>
 
@@ -300,36 +301,36 @@ spec:
     apiVersion: v1
 data:
   status: |+
-    Cluster-autoscaler status at 2023-09-17 19:05:01.231858842 +0000 UTC:
+    Cluster-autoscaler status at 2023-08-17 19:05:01.231858842 +0000 UTC:
     Cluster-wide:
       Health:      Healthy (ready=2 unready=0 (resourceUnready=0) notStarted=0 longNotStarted=0 registered=2 longUnregistered=0)
-                   LastProbeTime:      2023-09-17 19:05:01.230614368 +0000 UTC m=+525.142735557
-                   LastTransitionTime: 2023-09-17 18:58:58.014039222 +0000 UTC m=+161.926160412
+                   LastProbeTime:      2023-08-17 19:05:01.230614368 +0000 UTC m=+525.142735557
+                   LastTransitionTime: 2023-08-17 18:58:58.014039222 +0000 UTC m=+161.926160412
       ScaleUp:     NoActivity (ready=2 registered=2)
-                   LastProbeTime:      2023-09-17 19:05:01.230614368 +0000 UTC m=+525.142735557
-                   LastTransitionTime: 2023-09-17 18:58:58.014039222 +0000 UTC m=+161.926160412
+                   LastProbeTime:      2023-08-17 19:05:01.230614368 +0000 UTC m=+525.142735557
+                   LastTransitionTime: 2023-08-17 18:58:58.014039222 +0000 UTC m=+161.926160412
       ScaleDown:   NoCandidates (candidates=0)
-                   LastProbeTime:      2023-09-17 19:05:01.230614368 +0000 UTC m=+525.142735557
-                   LastTransitionTime: 2023-09-17 18:58:58.014039222 +0000 UTC m=+161.926160412
+                   LastProbeTime:      2023-08-17 19:05:01.230614368 +0000 UTC m=+525.142735557
+                   LastTransitionTime: 2023-08-17 18:58:58.014039222 +0000 UTC m=+161.926160412
 
     NodeGroups:
       Name:        ocid1.nodepool.oc1.phx.aaaaaaaaptvbivi24yn7fcfgpq4jovgdgoqakwvmiaje25rp2nncj4gzflja
       Health:      Healthy (ready=2 unready=0 (resourceUnready=0) notStarted=0 longNotStarted=0 registered=2 longUnregistered=0 cloudProviderTarget=2 (minSize=1, maxSize=5))
-                   LastProbeTime:      2023-09-17 19:05:01.230614368 +0000 UTC m=+525.142735557
-                   LastTransitionTime: 2023-09-17 18:58:58.014039222 +0000 UTC m=+161.926160412
+                   LastProbeTime:      2023-08-17 19:05:01.230614368 +0000 UTC m=+525.142735557
+                   LastTransitionTime: 2023-08-17 18:58:58.014039222 +0000 UTC m=+161.926160412
       ScaleUp:     NoActivity (ready=2 cloudProviderTarget=2)
-                   LastProbeTime:      2023-09-17 19:05:01.230614368 +0000 UTC m=+525.142735557
-                   LastTransitionTime: 2023-09-17 18:58:58.014039222 +0000 UTC m=+161.926160412
+                   LastProbeTime:      2023-08-17 19:05:01.230614368 +0000 UTC m=+525.142735557
+                   LastTransitionTime: 2023-08-17 18:58:58.014039222 +0000 UTC m=+161.926160412
       ScaleDown:   NoCandidates (candidates=0)
-                   LastProbeTime:      2023-09-17 19:05:01.230614368 +0000 UTC m=+525.142735557
-                   LastTransitionTime: 2023-09-17 18:58:58.014039222 +0000 UTC m=+161.926160412
+                   LastProbeTime:      2023-08-17 19:05:01.230614368 +0000 UTC m=+525.142735557
+                   LastTransitionTime: 2023-08-17 18:58:58.014039222 +0000 UTC m=+161.926160412
 
     kind: ConfigMap
     metadata:
     annotations:
-        cluster-autoscaler.kubernetes.io/last-updated: 2023-09-17 19:05:01.231858842 +0000
+        cluster-autoscaler.kubernetes.io/last-updated: 2023-08-17 19:05:01.231858842 +0000
         UTC
-    creationTimestamp: "2023-09-17T18:29:02Z"
+    creationTimestamp: "2023-08-17T18:29:02Z"
     name: cluster-autoscaler-status
     namespace: kube-system
     resourceVersion: "867523"

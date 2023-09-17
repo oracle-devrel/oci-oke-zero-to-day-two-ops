@@ -25,13 +25,15 @@ To simplify the installation, a kubernetes manifest has been created for you (in
 2. Apply the provided Kubernetes manifest.
 
     ```
-    <copy>2.	kubectl create -f resources/neuvector.yaml<copy>
+    <copy>kubectl create -f resources/neuvector.yaml<copy>
     ```
 
 3. Check to ensure all pods have been created successfully. Do not proceed until everything is *running*
 
     ```
-    <copy>kubectl -n neuvector get pods</copy>
+    <copy>
+    kubectl -n neuvector get pods
+    </copy>
     ```
 
 4. Obtain the external IP address for the Neuvector service.
@@ -40,25 +42,38 @@ To simplify the installation, a kubernetes manifest has been created for you (in
     <copy>kubectl -n neuvector get svc
     ```
 
-    screenshot here
+    ```bash
+    eli_devrel@cloudshell:~ (us-phoenix-1)$ kubectl -n neuvector get svc
+    NAME                              TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                         AGE
+    neuvector-service-webui           LoadBalancer   10.96.59.249   144.24.27.143   8443:32174/TCP                  36s
+    neuvector-svc-admission-webhook   ClusterIP      10.96.137.87   <none>          443/TCP                         36s
+    neuvector-svc-controller          ClusterIP      None           <none>          18300/TCP,18301/TCP,18301/UDP   36s
+    neuvector-svc-crd-webhook         ClusterIP      10.96.7.112    <none>          443/TCP                         36s
+    ```
 
-5. Open a new browser tab and input the IP address identified above, followed by **`:8443`**.
+5. Open a new browser tab **`https://{EXTERNAL-IP}:8443`**. Because we don't have a TLS cert you'll get the insecure connection warning again.  Click Advanced and Proceed.
 
-    screenshot here.
+    ![Neuvector login screen](images/ne)
 
     >NOTE: To log into the console, enter **admin** for both *username* and *password*
 
 ## Task 2: Take a look around the Neuvector console
 
-1. Vulnerability scanning allows you to check Container Registry, Container Runtime, and perform CIS benchmarking (Platform, Nodes, and Containers).
+Take a few minutes to look around the console. The following are just a few recommendations.
 
-2. Admission Controller can be used to block privileged containers, block unsigned images, and more.
+1. Scroll down through the dashboard for high-level summary details.
 
-3. Network Protection allows for network policies, layer 7 firewall rules, and Web Application Firewall (WAF).
+    ![Neuvector dashboard](images/neuvector-dashboard.png)
 
-4. Runtime protection provides baselines for application behavior, including process and network violation.
+2. Click on Network Activity to see a diagram of your containerized environment. Right click on any of the pods to see available actions.
 
-Thats it for Neuvector for now. Feel free to check it out later when you have some spare time. Let's move on to Cosign.
+    ![Pod context menu](images/neuvector-pod-menu.png)
+
+3. Click the Security Risks menu and then click Compliance. You can explore the compliance warnings that were detected by the tool. Up at the top of the page you'll notice a few options to print detailed reports.
+
+    ![Compliance page](images/neuvector-compliance.png)
+
+Thats it for Neuvector for now. Feel free to check it out more later when you have some spare time. Let's move on to Cosign.
 
 ## [Optional] Task 3: Install Cosign and sign a container image
 
@@ -187,6 +202,6 @@ You may now **proceed to the next lab**.
 
 ## Acknowledgements
 
-* **Author** - 
-* **Contributors** -
+* **Author** - Eli Schilling - Developer Advocate
+* **Contributors** - Chip Hwang - Sr. Principal Tech Marketing Engineer
 * **Last Updated By/Date** - September 2023

@@ -8,13 +8,10 @@ In this lab you will explore some of the fundamental capabilities of Kubernetes 
     1. Using the Kubernetes Dashboard
     2. Cluster and Node Pool Upgrades
     3. Creating and scaling node pools
-    4. Working with Cluster auto scaling
 2. Operational tasks
     1. Manually scaling an existing deployment (K8s dashboard)
-    2. Perform rolling updates
-    3. Rolling back an update
-    4. Horizontal pod scaling
-    5. Working with Cluster 
+    2. Horizontal pod scaling
+    3. Working with Cluster Autoscaler
 
 Estimated time: 45 minutes
 

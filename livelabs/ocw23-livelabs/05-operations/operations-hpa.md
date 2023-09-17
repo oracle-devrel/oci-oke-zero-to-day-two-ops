@@ -166,43 +166,6 @@ The metrics server provides information on the current use of resources in the c
 
 You can see in the output above that all of the pods are using very small amounts of CPU here, this is because we're not really putting any load on them. Let's run a script that will put load on the services to see what's happening.
 
-If your cloud shell session is new or has been restarted then the shell variable `$EXTERNAL_IP` may be invalid, expand this section if you think this may be the case to check and reset it if needed.
-
-<details><summary><b>How to check if $EXTERNAL_IP is set, and re-set it if it's not</b></summary>
-
-**To check if `$EXTERNAL_IP` is set**
-
-If you want to check if the variable is still set type `echo $EXTERNAL_IP` if it returns the IP address you're ready to go, if not then you'll need to re-set it, there are a couple of ways to do this, expand the appropriate section below.
-
-<details><summary><b>Reminder: How to get the external IP address</b></summary>
-
-  - Open the OCI cloud shell 
-
-  - You are going to get the value of the `EXTERNAL_IP` for your environment. This is used to identify the DNS name used by an incoming connection. In the OCI cloud shell type
-
-  ```bash
-  <copy>kubectl get svc -n ingress-nginx</copy>
-  ```
-
-  ```
-  NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)                      AGE
-  ingress-nginx-controller             LoadBalancer   10.96.182.204   130.162.40.241   80:31834/TCP,443:31118/TCP   2h
-  ingress-nginx-controller-admission   ClusterIP      10.96.216.33    <none>           443/TCP                      2h
-  ```
-
-  - Look for the `ingress-nginx-controller` line and note the IP address in the `EXTERNAL-IP` column. In this case that's `130.162.40.121` but it's almost certain that the IP address you have will differ. IMPORTANT, be sure to use the IP in the `EXTERNAL-IP` column, ignore anything that looks like an IP address in any other column as those are internal to the OKE cluster and not used externally. 
-
-  - IN the OCI CLoud shell type the following, replacing `<external ip>` with the IP address you retrieved above.
-  
-  ```bash
-  export EXTERNAL_IP=<external ip>
-  ```
-  
----
-
-</details>
-
-</details>
 
   4. To generate load, you'll use a container with the BusyBox image.
 
@@ -237,7 +200,8 @@ If you want to check if the variable is still set type `echo $EXTERNAL_IP` if it
     ```
   
     ```
-    NAME                           CPU(cores)   MEMORY(bytes)   
+    NAME                           CPU(cores)   MEMORY(bytes)  
+    load-generator                       12m         0Mi  
     mushop-api-88bd7c499-qcwcp           1m           12Mi            
     mushop-assets-7f97df7bbd-zsmgc       1m           7Mi             
     mushop-edge-5d6f7ccf67-xdvr2         7m           25Mi            
@@ -254,11 +218,11 @@ If you want to check if the variable is still set type `echo $EXTERNAL_IP` if it
     ```
   
     ```
-    NAME                           CPU(cores)   MEMORY(bytes)   
+    NAME                           CPU(cores)   MEMORY(bytes) 
+    load-generator                       127m         0Mi   
     mushop-api-88bd7c499-qcwcp           1m           12Mi            
     mushop-assets-7f97df7bbd-zsmgc       1m           7Mi             
-    mushop-edge-5d6f7ccf67-xdvr2         19m          25Mi   
-    mushop-edge-5d6f7ccf67-dxmn9         17m          13Mi         
+    mushop-edge-5d6f7ccf67-xdvr2         19m          25Mi          
     mushop-session-864cb5b4db-vqpxr      1m           7Mi             
     mushop-storefront-7b685595df-sczzf   230m         1Mi           
     ```
@@ -267,13 +231,12 @@ If you want to check if the variable is still set type `echo $EXTERNAL_IP` if it
 
     Don't worry if the load doesn't reach the specified limit. The best practice is to initiate a scaling action while you still have a little bit of capacity left.
 
-    >Note: You may see the **mushop-edge** pod scaling out. That was configured as part of the Helm chart deployment. You may recall you disabled the HPA for storefront before deploying the app.
 
   10. You can get the current resource level for the container using kubectl and the jsonpath capability. In the OCI Cloud Shell (substitute your storefront pod name) type 
   
     ```bash
     <copy>
-    kubectl get pod storefront-79c465dc6b-x8fbl -o=jsonpath='{.spec.containers[0].resources.limits.cpu}'
+    kubectl get pod mushop-storefront-79c465dc6b-x8fbl -o=jsonpath='{.spec.containers[0].resources.limits.cpu}' && echo " "
     </copy>
     ```
  
@@ -330,8 +293,6 @@ Setup autoscale (normally of course this would be handled using modifications to
     NAME         REFERENCE                          TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
     <tbd>        Deployment/mushop-storefront       1%/25%     1         3         1          44s
     ```
-
-    Note that because we told the auto scaler that we wanted a minimum of 2 pods the REPLICAS has already increased to 2. Because this deployment is "behind" the tbe service the service will automatically arrange for the load to be balanced across both pods for us.
 
     Of course typing `horizontalpodautoscaler` takes some time, so kubectl has an alias setup for us, we can just type `hpa` instead, for example
 
@@ -454,15 +415,7 @@ Setup autoscale (normally of course this would be handled using modifications to
     NAME                                 CPU(cores)   MEMORY(bytes)   
     load-generator                       343m         0Mi             
     mushop-api-88bd7c499-tdv9j           1m           15Mi            
-    mushop-assets-7f97df7bbd-6t765       1m           7Mi             
-    mushop-edge-5d6f7ccf67-42x5x         33m          13Mi            
-    mushop-edge-5d6f7ccf67-966wz         31m          26Mi            
-    mushop-edge-5d6f7ccf67-b6j5k         35m          13Mi            
-    mushop-edge-5d6f7ccf67-c8kv8         37m          13Mi            
-    mushop-edge-5d6f7ccf67-fsdqm         33m          13Mi            
-    mushop-edge-5d6f7ccf67-hwvjp         36m          13Mi            
-    mushop-edge-5d6f7ccf67-p49p7         35m          14Mi            
-    mushop-edge-5d6f7ccf67-q4tb9         31m          13Mi            
+    mushop-assets-7f97df7bbd-6t765       1m           7Mi                        
     mushop-edge-5d6f7ccf67-vrzrl         32m          13Mi            
     mushop-session-864cb5b4db-czvbx      1m           7Mi             
     mushop-storefront-7b685595df-26rxr   40m          1Mi             
@@ -490,11 +443,11 @@ Setup autoscale (normally of course this would be handled using modifications to
 
   11. Open the Kubernetes Dashboard
 
-  12. Make sure you are in your namespace
+  12. Make sure you are in the default namespace
 
   13. In the left menu under _workloads_ select **Deployments** then click on the `mushop-storefront` deployment.
 
-  14. In the **Pods** section you can see that in this case it's scaled to 5 pods
+  14. In the **Pods** section you can see that in this case it's scaled to 3 pods
 
     ![Seeing the change in pod count in the dashboard](images/autoscaling-pods-increased.png)
 
@@ -506,7 +459,7 @@ Setup autoscale (normally of course this would be handled using modifications to
 
     ![Details of the auto scaled pods](images/autoscaling-pods-list.png)
 
-  17. Return to the cloud shell window where the load generator is running. Stop the command by typing Control-C
+  17. Return to the cloud shell window where the load generator is running. Stop the command by typing Control-C. Then type **`exit`** and press enter to leave the BusyBox container.
 
     Note that the metrics server seems to operate on a decaying average basis, so stopping the load generating script will not immediately drop the per pod load. This means that it may take some time after stopping the load generator script for the autoscaler to start removing unneeded pods.   
 
@@ -515,11 +468,11 @@ Setup autoscale (normally of course this would be handled using modifications to
   18. In the OCI Cloud Shell type
   
     ```bash
-    <copy>kubectl delete hpa tbd</copy>
+    <copy>kubectl delete hpa mushop-storefront</copy>
     ```
 
     ```
-    horizontalpodautoscaler.autoscaling "tbd" deleted
+    horizontalpodautoscaler.autoscaling "mushop-storefront" deleted
     ```
 
     Note that this just stops changes to the number of pods, any existing pods will remain, even if there are more (or less) than specified in the deployment document. Of course now the auto scaler has been deleted regardless of the load that number will no longer change automatically.
@@ -578,6 +531,6 @@ You have reached the end of this section of the lab. The next module is `Rolling
 
 ## Acknowledgements
 
-* **Author** - 
-* **Contributor** - 
-* **Last Updated By** - 
+* **Author** - Eli Schilling - Developer Advocate
+* **Contributor** - Chip Hwang - Sr. Principal Tech Marketing Engineer
+* **Last Updated By** - August 2023
