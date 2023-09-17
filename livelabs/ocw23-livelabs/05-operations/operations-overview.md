@@ -26,6 +26,16 @@ In this lab you will familiarize yourself with a variety of administration and o
 
 The Kubernetes dashboard is a managed add-on and can be deployed when the cluster is first created. For the sake of this workshop, we chose to walk through the process of enabling this add-on later.
 
+Before getting started, you will need to change your config context back to the OKE cluster deployed in lab 2. Confirm the context name of the original cluster and use it to run the following command:
+
+    ```
+    <copy>
+    kubectl config use-context k8s-managed
+    </copy>    
+    ```
+
+Alright...good to go!
+
 ### Task 1a: Enable the Kubernetes Dashboard add-on
 
 1. Open the OCI console and navigate to **Developer Services** -> **Kubernetes Clusters (OKE)**. 
@@ -53,6 +63,27 @@ The Kubernetes dashboard is a managed add-on and can be deployed when the cluste
     ```
 
 7. Scroll down to the **spec** section and locate the **type**. Press `i` to enter insert mode, then delete *ClusterIP* and replace with *LoadBalancer*.
+
+    <details><summary><b>OPTIONAL: Create flexible shape load balancer</b></summary>
+    
+    By default, this action will create a 100mbps load balancer. To take advantage of the more efficient, flexible load balancer shape, you may choose to add a few annotations to the kubernetes-dashboard service. If you'd like to try it out, add the following under the **`metadata`** section.
+
+    ```
+    <copy>
+    annotations:
+      oci.oraclecloud.com/load-balancer-type: lb
+      service.beta.kubernetes.io/oci-load-balancer-shape: flexible
+      service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "100"
+      service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
+    </copy>
+    ```
+
+    Make sure the spacing is correct.  **annotations:** should be two spaces in from **metadata**, and each of the 4 statements should be 2 spaces in from **annotations:**.
+
+    ![Annotations for flexible LB shape](images/k8s-dashboard-lb-flex.png)
+
+    ---
+    </details>
 
     The save and exit process is similar to Vim: `esc` -> `:wq` -> `[Enter]`
 
