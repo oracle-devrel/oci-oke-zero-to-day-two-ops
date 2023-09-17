@@ -58,7 +58,12 @@
       "filename":"../ocw23-livelabs/06-security-observability/sec-controls.md"
     },
     {
-      "title": "Lab 6d: Encrypting Volumes with Customer Managed Keys",
+      "title": "Lab 6b: Metrics Capture and Analysis",
+      "description" : "Utilize Prometheus and Grafana to capture and analyze metrics within your Kubernetes cluster.",
+      "filename":"../ocw23-livelabs/06-security-observability/obs-capture-and-analyze.md"
+    },
+    {
+      "title": "Lab 6c: Encrypting Volumes with Customer Managed Keys",
       "description" : "Utilize cutsomer-managed keys and OCI vault for data encryption of dynamically provisioned volumes.",
       "filename":"../ocw23-livelabs/06-security-observability/sec-data_encryption.md"
     },

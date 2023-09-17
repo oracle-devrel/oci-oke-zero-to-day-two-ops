@@ -42,7 +42,7 @@ To simplify the installation, a kubernetes manifest has been created for you (in
 
     screenshot here
 
-5. Open a new browser tab and input the IP address identified above.
+5. Open a new browser tab and input the IP address identified above, followed by **`:8443`**.
 
     screenshot here.
 

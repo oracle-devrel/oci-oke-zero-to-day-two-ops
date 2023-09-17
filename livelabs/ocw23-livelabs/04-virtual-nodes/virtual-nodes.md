@@ -41,32 +41,32 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
 1. In Cloud Shell, return to the Resources directory that was leveraged in Lab 3.
 
-  ```
-  <copy>
-  cd ~/resources
-  </copy>
-  ```
+    ```
+    <copy>
+    cd ~/resources
+    </copy>
+    ```
 
-2. Run the `docker login` command to authenticate to the Container Registry.  You'll need the username and password (auth toke) captured during lab 1.
+2. Run the `docker login` command to authenticate to the Container Registry.  You'll need the username and password (auth token) captured during lab 1.
 
-  ```
-  <copy>
-  docker login phx.ocir.io
-  </copy>
-  ```
+    ```
+    <copy>
+    docker login phx.ocir.io
+    </copy>
+    ```
 
   >Note: Replace `phx` with the region key for your chosen region
 
-  ```bash
-  eli_devrel@cloudshell:resources (us-phoenix-1)$ docker login phx.ocir.io
-  Username (abc123def456/eli.devrel@gmail.com): abc123def456/eli.devrel@gmail.com
-  Password: 
-  WARNING! Your password will be stored unencrypted in /home/eli_devrel/.docker/config.json.
-  Configure a credential helper to remove this warning. See
-  https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+    ```bash
+    eli_devrel@cloudshell:resources (us-phoenix-1)$ docker login phx.ocir.io
+    Username (abc123def456/eli.devrel@gmail.com): abc123def456/eli.devrel@gmail.com
+    Password: 
+    WARNING! Your password will be stored unencrypted in /home/eli_devrel/.docker/config.json.
+    Configure a credential helper to remove this warning. See
+    https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 
-  Login Succeeded
-  ```
+    Login Succeeded
+    ```
 
 3. Now its time to build:
 
@@ -114,7 +114,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
 4. Paste the following code block:
 
-    ```
+    ```bash
     <copy>
     apiVersion: apps/v1
     kind: Deployment
@@ -134,7 +134,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
         spec:
           containers:
           - name: snake
-            image: phx.ocir.io/<tenancy namespace>/okeapprepo:latest
+            image: phx.ocir.io/tenancy namespace/okeapprepo:latest
             ports:
             - containerPort: 80
           imagePullSecrets:
@@ -153,6 +153,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
       type: ClusterIP
       </copy>
     ```
+
 5. Click **File** -> **Save** to save your changes.
 
 6. Create a second file using the menu. Name it `sample-app-ingress.yaml`.
@@ -232,14 +233,19 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
     ```
     <copy>
-    kubectl create secret docker-registry ocirsecret --docker-server=<container registry endpoint> --docker-username=<complete username> --docker-password=<auth token> --docker-email=<your email address>
+    kubectl create secret docker-registry ocirsecret --docker-server=<container registry endpoint> --docker-username=<complete username> --docker-password='<auth token>' --docker-email=<your email address>
     <copy>
     ```
     
     * container registry endpoint = i.e. phx.ocir.io
     * complete username = `[tenancy namespace]/[username or email address]`
         *i.e. abc123dev456/eli.schilling@oracle.com*
-    * auth token = the value of the token created in lab 1
+    * auth token = the value of the token created in lab 1. Must be entered within single or double quotes.
+
+    ```bash
+    eli_devrel@cloudshell:~ (us-phoenix-1)$ kubectl create secret docker-registry ocirsecret --docker-server=phx.ocir.io --docker-username=abc123def456/eli.devrel@gmail.com --docker-password=';)redacted!x' --docker-email=eli.devrel@gmail.com
+    secret/ocirsecret created
+    ```
 
 ## Task 5: Deploy the app
 
@@ -254,7 +260,9 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 2. It will take about 60 seconds to instantiate the application pod. You can run the following to check status:
 
     ```
-    <copy>kubectl get pods -o wide</copy>
+    <copy>
+    kubectl get pods -o wide
+    </copy>
     ```
 
 3. When the pod is in a running state, copy the following to retriev the IP address of the load balancer:
@@ -283,7 +291,7 @@ In this task you will deploy a new OKE cluster using Resource Manager and Terraf
 
 3. Press the **`i`** key to enter insert mode and replace the 1 with a 2.
 
-4. Press **`esc`** then **`:wq`** and press enter to save changes and exit.
+4. Press **`esc`** then **`:wq`** and press **`enter`**` to save changes and exit.
 
 5. Enter the following command to view the results of the change:
 
