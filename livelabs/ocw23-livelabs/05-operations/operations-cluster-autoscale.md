@@ -124,6 +124,7 @@ rules:
     verbs: ["watch", "list", "get", "patch", "update"]
   - apiGroups: [""]
     resources:
+      - "namespaces"
       - "pods"
       - "services"
       - "replicationcontrollers"
@@ -140,7 +141,7 @@ rules:
     resources: ["statefulsets", "replicasets", "daemonsets"]
     verbs: ["watch", "list", "get"]
   - apiGroups: ["storage.k8s.io"]
-    resources: ["storageclasses", "csinodes"]
+    resources: ["storageclasses", "csinodes", "csidrivers", "csistoragecapacities"]
     verbs: ["watch", "list", "get"]
   - apiGroups: ["batch", "extensions"]
     resources: ["jobs"]
@@ -269,6 +270,183 @@ spec:
 
     * The value of `--scale-down-unneeded-time=5m` was also reduced.  This is the duration that the cluster auto scaler will wait before removing resources, once the scale in threshold has been met.
 
+3. Deploy the Kubernetes Cluster Autoscaler with the following command:
+
+    ```
+    <copy>
+    kubectl apply -f cluster-autoscaler.yaml
+    </copy>
+    ```
+
+4. It will take a minute or two to initialize. While you wait, feel free to check the logs:
+
+    ```
+    <copy>
+    kubectl -n kube-system logs -f deployment.apps/cluster-autoscaler
+    </copy>
+    ```
+
+    >NOTE: Press ctrl+c to exit at any time.
+
+5. Check the status of the Cluster Autoscaler. 
+
+    ```
+    <copy>
+    kubectl -n kube-system get cm cluster-autoscaler-status -oyaml
+    </copy>
+    ```
+
+    ```bash
+    apiVersion: v1
+data:
+  status: |+
+    Cluster-autoscaler status at 2023-09-17 19:05:01.231858842 +0000 UTC:
+    Cluster-wide:
+      Health:      Healthy (ready=2 unready=0 (resourceUnready=0) notStarted=0 longNotStarted=0 registered=2 longUnregistered=0)
+                   LastProbeTime:      2023-09-17 19:05:01.230614368 +0000 UTC m=+525.142735557
+                   LastTransitionTime: 2023-09-17 18:58:58.014039222 +0000 UTC m=+161.926160412
+      ScaleUp:     NoActivity (ready=2 registered=2)
+                   LastProbeTime:      2023-09-17 19:05:01.230614368 +0000 UTC m=+525.142735557
+                   LastTransitionTime: 2023-09-17 18:58:58.014039222 +0000 UTC m=+161.926160412
+      ScaleDown:   NoCandidates (candidates=0)
+                   LastProbeTime:      2023-09-17 19:05:01.230614368 +0000 UTC m=+525.142735557
+                   LastTransitionTime: 2023-09-17 18:58:58.014039222 +0000 UTC m=+161.926160412
+
+    NodeGroups:
+      Name:        ocid1.nodepool.oc1.phx.aaaaaaaaptvbivi24yn7fcfgpq4jovgdgoqakwvmiaje25rp2nncj4gzflja
+      Health:      Healthy (ready=2 unready=0 (resourceUnready=0) notStarted=0 longNotStarted=0 registered=2 longUnregistered=0 cloudProviderTarget=2 (minSize=1, maxSize=5))
+                   LastProbeTime:      2023-09-17 19:05:01.230614368 +0000 UTC m=+525.142735557
+                   LastTransitionTime: 2023-09-17 18:58:58.014039222 +0000 UTC m=+161.926160412
+      ScaleUp:     NoActivity (ready=2 cloudProviderTarget=2)
+                   LastProbeTime:      2023-09-17 19:05:01.230614368 +0000 UTC m=+525.142735557
+                   LastTransitionTime: 2023-09-17 18:58:58.014039222 +0000 UTC m=+161.926160412
+      ScaleDown:   NoCandidates (candidates=0)
+                   LastProbeTime:      2023-09-17 19:05:01.230614368 +0000 UTC m=+525.142735557
+                   LastTransitionTime: 2023-09-17 18:58:58.014039222 +0000 UTC m=+161.926160412
+
+    kind: ConfigMap
+    metadata:
+    annotations:
+        cluster-autoscaler.kubernetes.io/last-updated: 2023-09-17 19:05:01.231858842 +0000
+        UTC
+    creationTimestamp: "2023-09-17T18:29:02Z"
+    name: cluster-autoscaler-status
+    namespace: kube-system
+    resourceVersion: "867523"
+    uid: 24bcc1d5-d211-4ac1-82f7-de94392f3bf2
+    ```
+
+## Task 3: Test the Cluster Autoscaler
+
+1. Before generating an event that will trigger scaling, first check the current nodes in the cluster.
+
+    ```
+    <copy>
+    kubectl get nodes
+    </copy>
+    ```
+
+    ```
+    eli_devrel@cloudshell:~ (us-phoenix-1)$ kubectl get nodes
+    NAME          STATUS   ROLES   AGE   VERSION
+    10.0.10.227   Ready    node    52m   v1.27.2
+    10.0.10.28    Ready    node    52m   v1.27.2
+    ```
+
+2. Now it's time to deploy a simple NGINX app via manifest (as-test-yaml). Notice the resource request limit memory of *500Mi*. This is done on purpose to quickly exhaust the available capacity in the two worker nodes.
+
+    ```
+    <copy>
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+    name: nginx-deployment
+    spec:
+    selector:
+        matchLabels:
+        app: nginx
+    replicas: 2
+    template:
+        metadata:
+        labels:
+            app: nginx
+        spec:
+        containers:
+        - name: nginx
+            image: nginx:latest
+            ports:
+            - containerPort: 80
+            resources:
+            requests:
+                memory: "500Mi"
+    </copy>
+    ```
+
+3. Apply the manifest:
+
+    ```
+    <copy>
+    kubectl apply -f as-manifest.yaml
+    </copy>
+    ```
+
+4. Time to kick this test into overdrive! Go ahead and increase the number of pods in the deployment to 50.
+
+    ```
+    <copy>
+    kubectl scale deployment nginx-deployment --replicas=50
+    </copy>
+    ```
+
+5. Now monitor the effects that result from the increase in pods:
+
+    ```
+    <copy>
+    kubectl get deployment nginx-deployment --watch
+    </copy>
+    ```
+
+    Provided you only have two worker nodes in the node pool, it should stop around 40 or so pods:
+
+        ```bash
+        eli_devrel@cloudshell:~ (us-phoenix-1)$ kubectl get deployment nginx-deployment --watch
+        NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+        nginx-deployment   23/50   50           23          2m20s
+        nginx-deployment   24/50   50           24          2m20s
+        nginx-deployment   25/50   50           25          2m20s
+        nginx-deployment   26/50   50           26          2m21s
+        nginx-deployment   27/50   50           27          2m21s
+        nginx-deployment   28/50   50           28          2m22s
+        nginx-deployment   29/50   50           29          2m22s
+        nginx-deployment   30/50   50           30          2m23s
+        nginx-deployment   31/50   50           31          2m24s
+        nginx-deployment   32/50   50           32          2m24s
+        nginx-deployment   33/50   50           33          2m24s
+        nginx-deployment   34/50   50           34          2m25s
+        nginx-deployment   35/50   50           35          2m26s
+        nginx-deployment   36/50   50           36          2m26s
+        nginx-deployment   37/50   50           37          2m27s
+        nginx-deployment   38/50   50           38          2m28s
+        nginx-deployment   39/50   50           39          2m28s
+        nginx-deployment   40/50   50           40          2m29s
+        nginx-deployment   41/50   50           41          2m30s
+        ```
+
+6. At this point, you can minimize Cloud Shell and look at your node pool. It should be updating, adding another node.  It's ok to leave the watch command running in Cloud Shell. Once the new node is functional, the additional pods will be scheduled.
+
+7. Once you see all 50 pods successfully scheduled, type **ctrl+c** to quit. Then type **`kubectl get nodes`** to check your node pool.  Should be an extra one there (just like you saw in the Web UI)
+
+## Task 4: Clean up
+
+1. Delete the deployment:
+
+    ```
+    <copy>
+    kubectl delete deployment nginx-deployment
+    </copy>
+    ```
+
+2. Remember that the Cluster Autoscaler configuration has a parameter to wait 5 minutes before removing unneeded nodes. You may choose to wait and check...or come back later and validate. Just run **`kubectl get nodes`** again to confirm that the extra node was removed.
 
 
 You may now **proceed to the next lab**.
@@ -280,6 +458,6 @@ You may now **proceed to the next lab**.
 
 ## Acknowledgements
 
-* **Author** - 
-* **Contributors** -
-* **Last Updated By/Date** - 
+* **Author** - Eli Schilling - Developer Advocate
+* **Contributors** - Chip Hwang - Sr. Principal Tech Marketing Engineer
+* **Last Updated By/Date** - August 2023

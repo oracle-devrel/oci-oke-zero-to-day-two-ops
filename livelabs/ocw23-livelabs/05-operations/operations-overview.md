@@ -262,10 +262,54 @@ At the beginning of the workshop you were guided to intentionally deploy an olde
 
     >NOTE: The control plane upgrade is done in a rolling fashion to mitigate any downtime to your cluster. While the upgrade is happening, you can still deploy and manage your Kubernetes resources. However, you will not be able to upgrade your node pool(s) to the latest version until the cluster upgrade is complete.
 
-4. 
+4. It will take a few minutes for the cluster upgrade to complete. When ready, you can continue on.
+
+5. Navigate to the **`Node pools`** in your cluster using the left nav manu. Then click the name of the node pool.
+
+    ![Node pool upgrade](images/oke-node-pool-upgrade.png)
+
+6. Click the **`[Edit]`** button and note that additional versions are availalbe to be selected. Choose the latest version `v1.27.2 (current cluster version)`.  The click **`[Save changes]`**
+
+7. The change will not affect any running nodes. Instead, it updates the node configuration that will apply to all new nodes that get created.
+
+    ![Node pool notice](images/oke-node-pool-notice.png)
+
+8. In order to deploy worker nodes with the latest Kubernetes version, you will need to `[Cycle nodes]`. Once the Node Pool status is Active (green), click **`[Cycle nodes]`**.
+
+9. When cycling nodes, you can control the replacement behavior to minimize downtime to your running pods. In this instance, set the **Maximum surge** to 2 and the **Maximum unavailable** to 1.  
+
+    ![Node cycling](images/oke-cycle-nodes.png)
+
+    >NOTE: With the settings applied above, this allows the cluster to create up to 2 new nodes at a time. Since we allowed up to 1 node to be unavailable at a time, the removal of one node will happen in parallen. Once the two new nodes are up, the second, original node will be removed.
+
+## Task 4: Adding and scaling node pools
+
+Adding and adjusting node pools is a simple task in OKE. Let's get started!
+
+1. Return to the Cluster details page and navigate to Nood pools. Click **`[Add node pool]`.
+
+2. Name it, ensure the latest version of Kubernetes is selected and move to **Node Placement Configuration** section. Here you can add one or more Availability Domains, depending on the region your using. For the sake of simplicity, just select one AD at this time.
+
+3. Select the node subnet *oke-nodesubnet-quick-cluster-%%%*
+
+4. The default shape is the E3.Flex with 1 OCPU and 16 GB of RAM. You can leave this as is.
+
+5. Scroll down a bit further and under **`Node pool options`** setthe **Node count** to 1.
+
+6. Under **`Pod communicatino`** select the same subnet as above *oke-nodesubnet-quick-cluster%%%*, then click **`[Add]`**.
+
+    >NOTE: It might take a minute for the UI to refresh. In a minute or two, you'll see the new node pool creating.
+
+7. Once the new node pool has been created, click the name. Under Node pool details, click **`[Edit]`** and increase the Node count to 2. Then **`[Save changes]`**.
+
+8. Within a minute or two you'll have an additional node to work with.
+
+9. In order to conserve resources, go ahead and delete this new node pool.
+
+You may now **proceed to the next lab**.
 
 ## Acknowledgements
 
 * **Author** - Eli Schilling - Developer Advocate
-* **Contributors** -
+* **Contributors** - Chip Hwang - Sr. Principal Tech Marketing Engineer
 * **Last Updated By/Date** - Eli Schilling / August 2023
