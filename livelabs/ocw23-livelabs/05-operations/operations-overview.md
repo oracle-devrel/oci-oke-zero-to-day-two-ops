@@ -102,7 +102,7 @@ Alright...good to go!
     kubernetes-dashboard   LoadBalancer   10.96.87.203   129.153.68.11   443:32326/TCP   13m
     ```
 
-9. Copy the `EXTERNAL-IP` and open a new browser window or tab. Navigate to *http://{your external IP}*.
+9. Copy the `EXTERNAL-IP` and open a new browser window or tab. Navigate to *https://{your external IP}*.
 
     >Note: Because the dashboard is utilizing HTTPS and there's no SSL Certificate deployed, your browser may present a security warning. It is ok to proceed past this to the login page.
 
@@ -110,7 +110,7 @@ Alright...good to go!
 
 1. Return to the other browser window with your Cloud Shell. In order to log into the Kubernetes dashboard, a token is required. You will create a service account user `dashboard-user` in the namespace `kube-system.
 
-2. You will need to create a new manifest file named `dashboard-user` (either in Cloud Shell with Vim or Code Editor). Paste the following into the file, then save it.
+2. You will need to create a new manifest file named `dashboard-user.yaml` (either in Cloud Shell with Vim or Code Editor). Paste the following into the file, then save it.
 
     ```
     <copy>
@@ -120,18 +120,7 @@ Alright...good to go!
       name: dashboard-user
       namespace: kube-system
     ---
-    apiVersion: rbac.authorization.k8s.io/v1
-    kind: ClusterRole
-    metadata:
-      name: kubernetes-dashboard-role
-    rules:
-      - apiGroups:
-        - "*"
-      resources:
-        - "*"
-      verbs:
-        - "*"
-    ---
+
     apiVersion: rbac.authorization.k8s.io/v1
     kind: ClusterRoleBinding
     metadata:
@@ -139,11 +128,12 @@ Alright...good to go!
     roleRef:
       apiGroup: rbac.authorization.k8s.io
       kind: ClusterRole
-      name: kubernetes-dashboard-role
+      name: cluster-admin
     subjects:
     - kind: ServiceAccount
       name: dashboard-user
       namespace: kube-system
+    ---
     </copy>
     ```
 
@@ -256,34 +246,26 @@ Unfortunately the replication controller that is connected to the deployment doe
 
 </details>
 
-## Task 3: Working with Cluster Auto scaling
-You can use the Kubernetes Cluster Autoscaler to automatically resize a cluster's managed node pools based on application workload demands. By automatically resizing a cluster's node pools, you can ensure application availability and optimize costs.
+## Task 3: Cluster and Node Pool Upgrades
 
-The Kubernetes Cluster Autoscaler is a standalone program that:
+At the beginning of the workshop you were guided to intentionally deploy an older version of Kubernetes. That was to allow for this task where you can see what the ugprade process looks like.  Let the fun and games commence!
 
-* Adds worker nodes to a node pool when a pod cannot be scheduled in the cluster because of insufficient resource constraints.
-* Removes worker nodes from a node pool when the nodes have been underutilized for an extended time, and when pods can be placed on other existing nodes.
+1. Return to the OCI Console and navigate to the **Kubernetes Clusters (OKE)** console. 
 
-<details><summary><b>Additional information: Kubernetes Cluster Autoscaler</b></summary>
+2. Click your cluster name (that was deployed in Lab 2) and note under Cluster details that a new version of Kubernetes is available.
 
-The Kubernetes Cluster Autoscaler increases or decreases the size of a node pool automatically based on resource requests, rather than on resource utilization of nodes in the node pool.
+    ![New version of Kubernetes available](images/oke-new-version.png)
 
-The Kubernetes Cluster Autoscaler works on a per-node pool basis. You use a configuration file to specify which node pools to target for expansion and contraction, the minimum and maximum sizes for each node pool, and how you want the autoscaling to take place. Node pools not referenced in the configuration file are not managed by the Kubernetes Cluster Autoscaler.
+3. Click the *_New Kubernetes version available_* hyperlink and observe the dialog box. Make note of the details provided, and click **`[Upgrade]`**.
 
-To enable the Kubernetes Cluster Autoscaler to automatically resize a cluster's node pools based on application workload demands, always include resource request limits in pod specifications (requests: under resources:).
+    ![Upgrade cluster](images/oke-upgrade-controller.png)
 
----
-</details>
+    >NOTE: The control plane upgrade is done in a rolling fashion to mitigate any downtime to your cluster. While the upgrade is happening, you can still deploy and manage your Kubernetes resources. However, you will not be able to upgrade your node pool(s) to the latest version until the cluster upgrade is complete.
 
-
-
-Instructions here
-
-
-
+4. 
 
 ## Acknowledgements
 
-* **Author** - 
+* **Author** - Eli Schilling - Developer Advocate
 * **Contributors** -
-* **Last Updated By/Date** - 
+* **Last Updated By/Date** - Eli Schilling / August 2023
