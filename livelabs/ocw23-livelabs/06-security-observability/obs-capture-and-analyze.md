@@ -189,13 +189,7 @@ There are some additional samples made available on Grafana.com. The following i
   | k8s-views-pods.json                | 15760 |
 
 
-## End of the module, what's next ?
-
-You may continue on to one of the following activities:
-
-* **Optional** [Lab 6c: Encrypting volumes with Customer Managed Keys (in OKE)](https://oracle-devrel.github.io/oci-oke-zero-to-day-two-ops/livelabs/ocw23-freetier/index.html?lab=sec-data_encryption)
-* **Optional** [Automating OKE App Deployment with OCI DevOps](https://oracle-devrel.github.io/oci-oke-zero-to-day-two-ops/livelabs/ocw23-freetier/index.html?lab=devops)
-* **Optional** ...but highly recommended - [Cleaning up your tenancy](https://oracle-devrel.github.io/oci-oke-zero-to-day-two-ops/livelabs/ocw23-freetier/index.html?lab=cleanup)
+You may now **proceed to the next lab!**
 
 ## Acknowledgements
 

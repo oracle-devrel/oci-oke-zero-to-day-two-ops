@@ -310,13 +310,21 @@ If you would like to experiment more with Virtual Nodes after the workshop you c
 
 The remainder of the workshop will utilize the OKE cluster you created in Lab 2.
 
-1. Return to the Resource Manager console and click the Stack `terraform-virtual-nodes...`
+1. In cloud shell run the following command to delete the ingress-nginx controller, which will in turn delete the associated load balancer.
 
-2. On the stack details screen, click the **`[Destroy]`** button to remove all of the infrastructure previously created by Terraform.
+  ```
+  <copy>
+  kubectl -n ingress-nginx delete svc ingress-nginx-controller
+  </copy>
+  ```
 
-3. The *destroy* process will take several minutes to complete. Once successful, you can click **`More actions`** - **`Delete stack`**. 
+2. Minimize Cloud SHell and return to the Resource Manager console and click the Stack `terraform-virtual-nodes...`
 
-4. When prompted, clidk **`[Delete]`**.
+3. On the stack details screen, click the **`[Destroy]`** button to remove all of the infrastructure previously created by Terraform.
+
+4. The *destroy* process will take several minutes to complete. Once successful, you can click **`More actions`** - **`Delete stack`**. 
+
+5. When prompted, click **`[Delete]`**.
 
   ![Delete the Resource Manager stack](images/delete-stack.png)
 
