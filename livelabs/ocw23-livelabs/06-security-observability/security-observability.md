@@ -39,109 +39,109 @@ These tools are of course not the only ones, but they are very widely used, and 
 
 1. The default installation of the kube-prometheus stack does not use persistent storage and therefore the collected metrics will be lost if the pods are restarted. To overcome this, you can customize the values.yaml passed to the helm chart, with added storage configuration.
 
-Create a new file named values-oci.yaml.
+  Create a new file named values-oci.yaml.
 
-  ```
-  <copy>
-  prometheus:
-    prometheusSpec:
-      storageSpec:
-        volumeClaimTemplate:
-          spec:
-            storageClassName: oci-bv
-            accessModes: ["ReadWriteOnce"]
-            resources:
-              requests:
-                storage: 50Gi
+    ```
+    <copy>
+    prometheus:
+      prometheusSpec:
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: oci-bv
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 50Gi
 
-  </copy>
-  ```
+    </copy>
+    ```
 
 2. Now add the Helm repo and update the charts.
 
-  ```
-  <copy>
-  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts && helm repo update
-  </copy>
-  ```
+    ```
+    <copy>
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts && helm repo update
+    </copy>
+    ```
 
 3. Create a new Kubernetes namespace for the monitoring stack.
 
-  ```
-  <copy>
-  kubectl create namespace monitoring
-  </copy>
-  ```
+    ```
+    <copy>
+    kubectl create namespace monitoring
+    </copy>
+    ```
 
 4. Install the chart using the values.yaml created in step 1.
 
-  ```
-  <copy>
-  helm install kube-prometheus-stack --namespace monitoring -f values.yaml prometheus-community/kube-prometheus-stack
-  </copy>
-  ```
+    ```
+    <copy>
+    helm install kube-prometheus-stack --namespace monitoring -f values.yaml prometheus-community/kube-prometheus-stack
+    </copy>
+    ```
 
 5. Once the installation is complete, the `kube-prometheus-stack-grafana` service will need to be exposed to the public internet. Time to edit the service and change a few things. (similar to what was done when deploying the K8s dashboard in lab 5)
 
-  ```bash
-  <copy>
-  kubectl -n monitoring edit svc kube-prometheus-stack-grafana
-  </copy>
-  ```
+    ```bash
+    <copy>
+    kubectl -n monitoring edit svc kube-prometheus-stack-grafana
+    </copy>
+    ```
 
 6. Type **`i`** to enter *insert* mode and change the `spec.type:` to **LoadBalancer**. Then scroll back up to the `metadata.annotations:` section and paste the following:
 
-  ```bash
-  <copy>
-    oci.oraclecloud.com/load-balancer-type: lb
-    service.beta.kubernetes.io/oci-load-balancer-shape: flexible
-    service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "100"
-    service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
-  </copy>
-  ```
-
-  It should look something like this - make sure spacing is correct:
-
-  ```bash
-  apiVersion: v1
-  kind: Service
-  metadata:
-    annotations:
-      meta.helm.sh/release-name: kube-prometheus-stack
-      meta.helm.sh/release-namespace: monitoring
+    ```bash
+    <copy>
       oci.oraclecloud.com/load-balancer-type: lb
       service.beta.kubernetes.io/oci-load-balancer-shape: flexible
       service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "100"
       service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
-  ```
+    </copy>
+    ```
+
+    It should look something like this - make sure spacing is correct:
+
+    ```bash
+    apiVersion: v1
+    kind: Service
+    metadata:
+      annotations:
+        meta.helm.sh/release-name: kube-prometheus-stack
+        meta.helm.sh/release-namespace: monitoring
+        oci.oraclecloud.com/load-balancer-type: lb
+        service.beta.kubernetes.io/oci-load-balancer-shape: flexible
+        service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "100"
+        service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
+    ```
 
 7. Exit and save to apply changes to the service. It will take 1-2 minutes for the Load Balancer to be created.
 
 8. Retrieve the external IP address for the stack.
 
-  ```bash
-  kubectl -n monitoring get svc
-  ```
+    ```bash
+    kubectl -n monitoring get svc
+    ```
 
 9. You may now open another browser tab and navigate to http://{EXTERNAL-IP}. You should land no:
 
-  ![Grafana logon page](images/grafana-login.png)
+    ![Grafana logon page](images/grafana-login.png)
 
-  ...but wait...where are my credentials?
+    ...but wait...where are my credentials?
 
-  I'm glad you asked...
+    I'm glad you asked...
 
 10. During the deployment, a default password was created and stored as a Kubernetes secret. To retrieve it, run the following command in Cloud Shell.
 
-  ```bash
-  <copy>
-  kubectl get secret kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" -n monitoring | base64 --decode;echo
-  </copy>
-  ```
+    ```bash
+    <copy>
+    kubectl get secret kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" -n monitoring | base64 --decode;echo
+    </copy>
+    ```
 
-  ...ok, I have the password...what is the username?
+    ...ok, I have the password...what is the username?
 
-  Another excellent question! The username will be **admin**
+    Another excellent question! The username will be **admin**
 
 11. Return to the Grafana logon page and enter your newfound credentials.
 
@@ -177,16 +177,17 @@ There are some additional samples made available on Grafana.com. The following i
 
   Grafana.com dashboard id list:
 
-  | Dashboard                          | ID    |
-  |:-----------------------------------|:------|
-  | k8s-addons-prometheus.json         | 19105 |
-  | k8s-addons-trivy-operator.json     | 16337 |
-  | k8s-system-api-server.json         | 15761 |
-  | k8s-system-coredns.json            | 15762 |
-  | k8s-views-global.json              | 15757 |
-  | k8s-views-namespaces.json          | 15758 |
-  | k8s-views-nodes.json               | 15759 |
-  | k8s-views-pods.json                | 15760 |
+
+    | Dashboard                          | ID    |
+    |:-----------------------------------|:------|
+    | k8s-addons-prometheus.json         | 19105 |
+    | k8s-addons-trivy-operator.json     | 16337 |
+    | k8s-system-api-server.json         | 15761 |
+    | k8s-system-coredns.json            | 15762 |
+    | k8s-views-global.json              | 15757 |
+    | k8s-views-namespaces.json          | 15758 |
+    | k8s-views-nodes.json               | 15759 |
+    | k8s-views-pods.json                | 15760 |
 
 
 You may now **proceed to the next lab!**

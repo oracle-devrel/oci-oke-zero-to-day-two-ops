@@ -53,7 +53,7 @@ To simplify the installation, a kubernetes manifest has been created for you (in
 
 5. Open a new browser tab **`https://{EXTERNAL-IP}:8443`**. Because we don't have a TLS cert you'll get the insecure connection warning again.  Click Advanced and Proceed.
 
-    ![Neuvector login screen](images/ne)
+    ![Neuvector login screen](images/neuvector-login.png)
 
     >NOTE: To log into the console, enter **admin** for both *username* and *password*
 
@@ -84,12 +84,16 @@ Cosign is an open source tool used to enforce securitiy of container images thro
 2. Install the Cosign package (in this example we're using Oracle linux)
 
     ```
-    <copy>sudo rpm -ivh cosign-1.8.0.x86_64.rpm
+    <copy>
+    sudo rpm -ivh cosign-1.8.0.x86_64.rpm
+    </copy>
     ```
 3. Once installed, generate a new key pair to be used for image signing.
 
     ```
-    <copy>cosign generate-key-pair</copy>
+    <copy>
+    cosign generate-key-pair
+    </copy>
     ```
 
     >NOTE: You will be prompted to enter a password or the private key. You *may* simply press `[Enter]` twice to leave the password blank. Though we all know you'd **_never_** do this in production.
