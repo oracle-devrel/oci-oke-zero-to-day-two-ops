@@ -218,7 +218,7 @@ You can use these commands to see when applications were deployed, what their cu
 
     ````shell
     <copy>
-    kubectl exec $POD_NAME env
+    kubectl exec -it $POD_NAME -- env
     </copy>
     ````
 
