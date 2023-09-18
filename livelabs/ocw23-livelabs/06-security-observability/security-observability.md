@@ -77,7 +77,7 @@ These tools are of course not the only ones, but they are very widely used, and 
 
     ```
     <copy>
-    helm install kube-prometheus-stack --namespace monitoring -f values.yaml prometheus-community/kube-prometheus-stack
+    helm install kube-prometheus-stack --namespace monitoring -f values-oci.yaml prometheus-community/kube-prometheus-stack
     </copy>
     ```
 
