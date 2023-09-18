@@ -31,9 +31,7 @@ To simplify the installation, a kubernetes manifest has been created for you (in
 3. Check to ensure all pods have been created successfully. Do not proceed until everything is *running*
 
     ```
-    <copy>
-    kubectl -n neuvector get pods
-    </copy>
+    <copy>kubectl -n neuvector get pods</copy>
     ```
 
 4. Obtain the external IP address for the Neuvector service.
