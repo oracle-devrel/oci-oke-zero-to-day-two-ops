@@ -99,7 +99,7 @@ The first deployment was just a basic example that allowed us to quickly spin up
 
     ```bash
     <copy>
-    wget https://objectstorage.us-phoenix-1.oraclecloud.com/p/sddgGnqEMQFT71q5sWTa-_6FWInMY5O0svrivV05vB0mHHSatCqhqgCkLto4LarL/n/axhc9zgtyjst/b/workshop/o/resources.zip
+    wget https://objectstorage.us-phoenix-1.oraclecloud.com/p/MAj3VdS04Rgw-qoetUpw6UJfeXJJk-Sz7qCBiVboBn-q4aDKwGJdIzVyhQY4KTgt/n/axhc9zgtyjst/b/workshop/o/resources.zip
     </copy>
     ```
 
