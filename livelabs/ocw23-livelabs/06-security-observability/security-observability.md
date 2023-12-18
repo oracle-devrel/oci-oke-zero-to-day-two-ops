@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This next series of labs is focused on implementing tools to enforce security, governance, and observability of your cluster. There are a wide variety of open source tools that can be leveraged to help accomplish these initiatives...we'll look at just a few.
+This next series of labs is focused on implementing tools to enforce security, governance, and observability of your cluster. There are a wide variety of open source tools that can be leveraged to help accomplish these initiatives... we'll look at just a few.
 
 **Estimated module duration** 30 mins.
 

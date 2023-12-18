@@ -354,7 +354,7 @@ data:
     10.0.10.28    Ready    node    52m   v1.27.2
     ```
 
-2. Now it's time to deploy a simple NGINX app via manifest (as-test-yaml). Notice the resource request limit memory of *500Mi*. This is done on purpose to quickly exhaust the available capacity in the two worker nodes.
+2. Now it's time to deploy a simple nginx app via manifest (as-test-yaml). Notice the resource request limit memory of *500Mi*. This is done on purpose to quickly exhaust the available capacity in the two worker nodes.
 
     ```
     <copy>

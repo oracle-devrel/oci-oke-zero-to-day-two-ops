@@ -28,7 +28,9 @@ Estimated time: 30 minutes
 
 5. Assign the following settings:
     1. Kubernetes version: *v1.26.2*
-        This is not the latest version. This is intentional. This is the way.
+        
+        > This is not the latest version. This is intentional. This is the way.
+    
     2. Kubernetes API Endpoint: *Public endpoint*
     3. Node Type: *Managed*
     4. Kubernetes worker nodes: *Private workers*
@@ -38,7 +40,8 @@ Estimated time: 30 minutes
         3. Amount of memory (GB): *16*
     6. Image: *Oracle Linux 7.9* (default)
     7. Node count: *2*
-        *You'll add more later*
+    
+        > You'll add more later.
 
 6. Click **`[Next]`**
 
@@ -62,19 +65,19 @@ Estimated time: 30 minutes
 
 4. And finally...let's make life a little easier by reducing the amount of typing required.  If you'd like, go ahead and:
 
-    1. Create an alias for the **`kubectl`** command.
+    1. Create an alias for the **`kubectl`** command:
 
         ```
         <copy>alias k=kubectl</copy>
         ```
 
-    2. Create an alias for **`kubectl get`**
+    2. Create an alias for **`kubectl get`**:
 
         ```
         <copy>alias kg='kubectl get'</copy>
         ```
 
-    3. Create an alias for **`kubectl delete`** (in this case we use *rm* to emulate the bash shell)
+    3. Create an alias for **`kubectl delete`** (in this case we use *rm* to emulate the bash shell):
 
         ```
         <copy>alias krm='kubectl delete'</copy>
@@ -90,15 +93,15 @@ Now that Kubernetes is up and running, interacting with the cluster is pretty mu
 
 2. Take a look at the default set of namespaces with `kubectl get namespaces`. You should see *default*, *kube-node-lease*, *kube-public*, and *kube-system*.
 
-3. Check to see which pods are running across all namespaces with `kubectl get pods -o wide -A`. You should see the likes of coredns, flannel, kube-proxy, and more.
+3. Check to see which pods are running across all namespaces with `kubectl get pods -o wide -A`. You should see the likes of *coredns*, *flannel*, *kube-proxy*, and more.
 
-4. Are there any ingress resources defined? Try `kubectl get ingress -A` - the results should be empty as we've not yet deployed an ingress controller or defined any ingress resources.  
+4. Are there any ingress resources defined? Try `kubectl get ingress -A` -- the results should be empty as we've not yet deployed an ingress controller or defined any ingress resources.
 
 5. Minimize (but do not exit) Cloud Shell.
 
 ## Task 4: Create a Container Registry Repo
 
-The OCI Container Registry (OCIR) is a secure, Dockerhub-compliant service that enables you to store and manage your container iamges securely, within the confines of OCI. 
+The OCI Container Registry (OCIR) is a secure, Dockerhub-compliant service that enables you to store and manage your container images securely, within the confines of OCI. 
 
 <details><summary><b>Prefer to work with the CLI?</b></summary>
 
@@ -111,6 +114,7 @@ The instructions below will take you through creating a new repo via the Web UI.
     ```
 
 ---
+
 </details>
 
 1. Navigate to **`Developer Services`** -> **`Container Registry`**
@@ -133,32 +137,36 @@ The instructions below will take you through creating a new repo via the Web UI.
     </copy>
     ```
 
-    >NOTE: if not using Phoenix, replace the region name with that which you've selected for the workshop.
+    > NOTE: if not using Phoenix, replace the region name with that which you've selected for the workshop.
 
-2. Your Container Register endpoint will thus be the **key** plus `.ocir.io`. *i.e.* `phx.ocir.io`
+2. Your Container Register endpoint will thus be the **key** plus `.ocir.io`, *e.g. `phx.ocir.io`*.
 
 3. For this next command you'll need to retrieve your Auth token which was created in the first lab. Construct the following command, making sure to input your own details:
 
     ```bash
     <copy>
-    kubectl create secret docker-registry ocirsecret --docker-server='container registry endpoint' --docker-username='complete username' --docker-password='auth token' --docker-email='your email address'
+    kubectl create secret docker-registry ocirsecret \
+      --docker-server='container registry endpoint' \
+      --docker-username='complete username' \
+      --docker-password='auth token' \
+      --docker-email='your email address'
     </copy>
     ```
     
-    * container registry endpoint = i.e. phx.ocir.io
-    * complete username = `<tenancy namespace>/<username or email address>`
-        *i.e. abc123dev456/eli.schilling@oracle.com*
-    * auth token = the value of the token created in lab 1
+    * **container registry endpoint** = *e.g. phx.ocir.io*
+    * **complete username** = `<tenancy namespace>/<username or email address>`
+        * *e.g. `abc123dev456/eli.schilling@oracle.com`*
+    * **auth token** = the value of the token created in lab 1
 
 4. Validate that the secret was created successfully:
 
-    ```
+    ```bash
     <copy>
     kubectl get secrets
     <copy>
     ```
 
-    ```
+    ```console
     user123@cloudshell:~ (us-phoenix-1)$ kubectl get secrets
     NAME         TYPE                             DATA   AGE
     ocirsecret   kubernetes.io/dockerconfigjson   1       3m
