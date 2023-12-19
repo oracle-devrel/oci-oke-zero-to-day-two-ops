@@ -115,7 +115,7 @@ The first deployment was just a basic example that allowed us to quickly spin up
     <copy>ls -al mushop</copy>
     ```
 
-4. Remembering that Helm provides a way of packaging and deploying configurable charts. Next we will deploy the application in "mock mode," where cloud services are mocked, yet the application is fully functional:
+4. Remember that Helm provides a way of packaging and deploying configurable charts. Next we will deploy the application in "mock mode," where cloud services are mocked, yet the application is fully functional:
 
     ```bash
     <copy>

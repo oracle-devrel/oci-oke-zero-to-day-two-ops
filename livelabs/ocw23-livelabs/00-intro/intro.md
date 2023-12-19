@@ -15,7 +15,7 @@ Estimated time: 4 hours
 
 In this lab, you will:
 
-* Provisioning infrastructure using IaC and OCI Resource Manager.
+* Provision infrastructure using IaC and OCI Resource Manager.
 * Leverage **Quick create** to deploy a new OKE cluster.
 * Deploy resources and get to know how Kubernetes operates on OCI.
 * Work with Kubernetes Virtual Nodes.
